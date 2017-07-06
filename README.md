@@ -30,10 +30,13 @@
     WBDC232
     
 - The file "genotype.hmp.txt" is barley 9K iSelect genotyping from the Wild Barley NAM population [paper](http://www.genetics.org/content/203/3/1453).
+    - The line listed as "M109" is Rasmusson. It was the recurrent parent in the experiment.
 
 ## Barley iSelect 9K SNP positions
 
 - [Physical positions from BLAST search](https://github.com/lilei1/9k_BOPA_SNP/blob/master/BOPA_9k_vcf_Morex_refv1/sorted_all_9k_masked_90idt.vcf)
 - Genetic map positions from the [iSelect 2013 Consensus map](https://triticeaetoolbox.org/barley/maps.php)
     - These are available on T3, on this [page](https://triticeaetoolbox.org/barley/maps.php), under \
-        "iSelect_2013Consensus_AllSNPs" 
+        "iSelect_2013Consensus_AllSNPs"
+
+ 
