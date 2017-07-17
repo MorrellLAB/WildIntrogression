@@ -6,7 +6,7 @@
 #   Written by Chaochih Liu
 #   July 17, 2017
 
-#   To Run: ./colMinMax.R [plink.dist] [outDir] [outFilename]
+#   To Run: ./lowerTri_colMinMax.R [plink.dist] [outDir] [outFilename]
 
 #   Required arguments:
 #       1) plink.dist: square matrix output from plink
