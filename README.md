@@ -1,5 +1,5 @@
 # Wild Barley Introgression
-##Searching for runs of indentity by state (IBS) in introgressed wild barley
+## Searching for runs of indentity by state (IBS) in introgressed wild barley
 
 - Wild barley lines often show introgression from cultivated barley. However it is not clear \
     how large the regions of introgression are or if they occur randomly across the genome.
@@ -28,7 +28,7 @@
     WBDC229
     WBDC231
     WBDC232
-    
+
 - The file "genotype.hmp.txt" is barley 9K iSelect genotyping from the Wild Barley NAM population [paper](http://www.genetics.org/content/203/3/1453).
     - The line listed as "M109" is Rasmusson. It was the recurrent parent in the experiment.
 
@@ -39,4 +39,4 @@
     - These are available on T3, on this [page](https://triticeaetoolbox.org/barley/maps.php), under \
         "iSelect_2013Consensus_AllSNPs"
 
- 
+
