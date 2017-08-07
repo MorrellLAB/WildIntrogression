@@ -1,5 +1,6 @@
 #!/bin/env bash
-# Takes map, vcf and hmp.txt file, trims them of unshared positions, converts them to a ped file, after removing the first position, which for some reason prevents my poor program from running then runs various plink analysis tools.
+# Takes map, vcf and hmp.txt file (in that order), trims them of unshared positions, converts them to a ped file, after removing the first position, which for some reason prevents my poor program from running then runs various plink analysis tools.
+#Connor Depies Aug 7, 2017
 set -e
 set -o pipefail
 set -u
