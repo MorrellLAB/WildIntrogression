@@ -59,6 +59,7 @@ plink --ped finished.ped --map finished.map --allow-extra-chr
 mv plink.bed finished.bed
 mv plink.bim finished.bim
 mv plink.fam finished.fam
+#After this point, the program works properly, but because at the time I wrote it I did not know about the necessity of fixing flip and force errors, I did not include those tasks on this file and thus the data sets generated are flawed. I will add the correct steps at some point.
 # runs plink commands to generate useful statistics
 plink --bfile finished  --freq --allow-extra-chr
 plink --bfile finished --distance square --allow-extra-chr
