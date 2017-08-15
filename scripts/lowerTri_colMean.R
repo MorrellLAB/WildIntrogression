@@ -2,7 +2,7 @@
 # Connor Depies Aug, 15, 2017
 #adapted from Chaochih's script: WildIntrogression/scripts/lowerTri_colMinMax.R
 # https://github.com/MorrellLAB/WildIntrogression/commit/4a865a46e18f15656dba736f5d7a033b8d28637a
-
+# The above is the commit at the time I adapted it
 
 # Takes 3 arguments and produces the mean of each column of a lower triangular matrix from a symmetric square matrix.
 #   To Run: ./lowerTri_colMinMax.R [plink.dist] [outDir] [outFilename]
