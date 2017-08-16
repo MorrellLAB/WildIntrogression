@@ -1,4 +1,4 @@
--   Conner will figure out which lines are introgresed lines
+-   Connor will figure out which lines are introgresed lines
      -  Combine Skylar's 9k-good SNPs file with genotypes pulled from T3 of Liana's AB-NAM parents
      - Run plink ibd
      - Run R to the matrix from plink output and figure out the intorgressed lines
