@@ -18,8 +18,6 @@ map=$1
 vcf=$2
 hmp=$3
 vcf2=$4
-
-
 # Stores headers
 head -n 8 $2  > vcfheader.txt 
 # Make sure you have 8 lines in your vcfheader
@@ -73,10 +71,10 @@ vcf-sort wild_9k.vcf>sortedwild_9k.vcf
 vcftools --vcf sortedwild_9k.vcf --diff $2  --diff-site --out diff_test
 #Step 3 in tutorial
 #Find the SNPs that are discordant and put a list of them in 
-awk '$4=="0"{print $0}' diff_test.diff.sites_in_files >diff_test
+awk '$4=="O"{print $0}' diff_test.diff.sites_in_files >diff_test
 #Step4 in tutorial
 #Get the flipped list
-grep -f <(awk -F"\t" -v OFS="\t" 'BEGIN {complement["A"] ="T"; complement["T"]="A"; complement["C"] = "G"; complement["G"] = "C";} $5 == complement[$6] && $7 == complement[$8]{print $0}' diff_test|cut -f1,2) $2 >flipped_SNP_list
+grep -f <(awk -F"\t" -v OFS="\t" 'BEGIN {complement["A"] = "T"; complement["T"] = "A"; complement["C"] = "G"; complement["G"] = "C";} $5 == complement[$6] && $7 == complement[$8]{print $0}' diff_test|cut -f1,2) $2|cut -f 3 >flipped_SNP_list
 #First round: flip the strand
 plink --vcf wild_9k.vcf --allow-extra-chr --flip flipped_SNP_list --keep-allele-order --recode vcf --out flipped
 #Compare the flipped vcf file with 9k vcf file
@@ -91,8 +89,14 @@ vcftools --vcf forced_ref_flipped.vcf --diff $2 --diff-site --out forced_ref_fli
 awk '$4=="O"{print $0}' forced_ref_flipped.diff.sites_in_files >flipped_forced_ref
 #Step 6 in tutorial
 #Get the flipped list
+#If there are no snps (there aren't in this case) in the flipped or forced reference list, grep fails to produce them, but I need them to run the last commands 
+#(even though these commands don't do us any good if we have empty lists, but if we don't they do and thus we still need them)
+#so I just made empty files before hand and if there is something in the lists the files get over-ridden and if not they are what they would have been if grep knew what it was doing.
+echo "" >flipped_SNP_for_forced_ref_flipped
+echo "" >forced_ref_for_forced_ref_flipped
+#Get the forced reference ist
 grep -f <(awk -F"\t" -v OFS="\t" 'BEGIN {complement["A"] = "T"; complement["T"] = "A"; complement["C"] = "G"; complement["G"] = "C";} $5 == complement[$8] && $6 == complement[$7]{print $0}' <(awk '$4=="O"{print $0}' forced_ref_flipped.diff.sites_in_files)|cut -f1,2) $2|cut -f3 >flipped_SNP_for_forced_ref_flipped
-Get the forced reference list
+#Get the forced reference list.
 grep -f <(awk -F"\t" -v OFS="\t" 'BEGIN {complement["A"] = "T"; complement["T"] = "A"; complement["C"] = "G"; complement["G"] = "C";} $5 == complement[$8] && $6 == complement[$7]{print $0}' <(awk '$4=="O"{print $0}' forced_ref_flipped.diff.sites_in_files)|cut -f1,2) $2|cut -f3,4 >forced_ref_for_forced_ref_flipped
 #Flipped first and then force reference
 plink --vcf forced_ref_flipped.vcf --allow-extra-chr --flip flipped_SNP_for_forced_ref_flipped --a2-allele forced_ref_for_forced_ref_flipped --keep-allele-order --recode vcf --out forced_flipped_forced_ref_flipped
