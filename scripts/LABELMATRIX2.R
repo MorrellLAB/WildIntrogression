@@ -5,5 +5,3 @@ wildintrogressions.names <- read.table(file = "/Users/connordepies/WildIntrogres
 colnames(x=wildintrogressions) <- wildintrogressions.names$V1
 rownames(x=wildintrogressions) <- wildintrogressions.names$V1
 write.table(x=wildintrogressions, file="/Users/connordepies/WildIntrogression/data/labledwildonly.txt", sep ="\t", row.names = TRUE, col.names = NA, quote = FALSE)
-
-
