@@ -18,6 +18,8 @@ map=$1
 vcf=$2
 hmp=$3
 vcf2=$4
+
+
 # Stores headers
 head -n 8 $2  > vcfheader.txt 
 # Make sure you have 8 lines in your vcfheader
@@ -55,8 +57,6 @@ rm common2.list
 rm common3.list
 rm almost.vcf
 rm almost.hmp.txt
-rm remove.txt
-rm sortedremove.txt
 #Creates bed, bim  and fam files with plink
 plink --ped diogenes.ped --map diogenes.map --allow-extra-chr
 #renames output
@@ -64,13 +64,13 @@ mv plink.bed diogenes.bed
 mv plink.bim diogenes.bim
 mv plink.fam diogenes.fam
 #Makes new vcf_file
-plink --bfile diogenes --recode vcf-iid --out wild_9k.vcf
+plink --bfile diogenes --recode vcf-iid --out wild_9k --allow-extra-chr
 #Fixes flips and forces
 #Sort vcf file by position
 #step 2 in tutorial
 vcf-sort wild_9k.vcf>sortedwild_9k.vcf
 #run vcf-tools to find concordances and discordances. Puts them in diff_test_sortedwild_9k.diff.sites_in_files
-vcftools --vcf sortedwild_9k.vcf --diff  --diff-site $2 --out diff_test
+vcftools --vcf sortedwild_9k.vcf --diff $2  --diff-site --out diff_test
 #Step 3 in tutorial
 #Find the SNPs that are discordant and put a list of them in 
 awk '$4=="0"{print $0}' diff_test.diff.sites_in_files >diff_test
@@ -85,7 +85,7 @@ vcftools --vcf flipped.vcf --diff $2 --diff-site --out flipped_9k
 #Get the forced reference list
 grep -f <(awk -F"\t" -v OFS="\t" '$5 == $8 && $6 == $7 { print $0 }' <(grep "O" flipped_9k.diff.sites_in_files)|cut -f1,2) $2|cut -f3,4 >forced_ref_alleles
 #Force reference
-plink --vcf flipped_9k.vcf --allow-extra-chr --a2-allele forced_ref_alleles --keep-allele-order --recode vcf --out forced_ref_flipped
+plink --vcf flipped.vcf --allow-extra-chr --a2-allele forced_ref_alleles --keep-allele-order --recode vcf --out forced_ref_flipped
 #Compare forced reference to 9k file
 vcftools --vcf forced_ref_flipped.vcf --diff $2 --diff-site --out forced_ref_flipped
 awk '$4=="O"{print $0}' forced_ref_flipped.diff.sites_in_files >flipped_forced_ref
