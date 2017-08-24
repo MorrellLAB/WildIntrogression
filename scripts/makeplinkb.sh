@@ -78,27 +78,63 @@ grep -f <(awk -F"\t" -v OFS="\t" 'BEGIN {complement["A"] = "T"; complement["T"] 
 #First round: flip the strand
 plink --vcf wild_9k.vcf --allow-extra-chr --flip flipped_SNP_list --keep-allele-order --recode vcf --out flipped
 #Compare the flipped vcf file with 9k vcf file
-vcftools --vcf flipped.vcf --diff $2 --diff-site --out flipped_9k
+vcftools --vcf flipped.vcf --diff $2 --diff-site --out flipped
 #Step 5 in tutorial
 #Get the forced reference list
-grep -f <(awk -F"\t" -v OFS="\t" '$5 == $8 && $6 == $7 { print $0 }' <(grep "O" flipped_9k.diff.sites_in_files)|cut -f1,2) $2|cut -f3,4 >forced_ref_alleles
+grep -f <(awk -F"\t" -v OFS="\t" '$5 == $8 && $6 == $7 { print $0 }' <(grep "O" flipped.diff.sites_in_files)|cut -f1,2) $2|cut -f3,4 >forced_ref_alleles
 #Force reference
-plink --vcf flipped.vcf --allow-extra-chr --a2-allele forced_ref_alleles --keep-allele-order --recode vcf --out forced_ref_flipped
+plink --vcf flipped.vcf --allow-extra-chr --a2-allele forced_ref_alleles --keep-allele-order --recode vcf --out forced_flipped
 #Compare forced reference to 9k file
-vcftools --vcf forced_ref_flipped.vcf --diff $2 --diff-site --out forced_ref_flipped
-awk '$4=="O"{print $0}' forced_ref_flipped.diff.sites_in_files >flipped_forced_ref
+vcftools --vcf forced_flipped.vcf --diff $2 --diff-site --out forced_flipped
+awk '$4=="O"{print $0}' forced_flipped.diff.sites_in_files >forced_flipped
+#Step 6 yields empty files, since there are no forces left to fix, and an empty file is causing a problem in running the program, so I will deal
 #Step 6 in tutorial
 #Get the flipped list
-#If there are no snps (there aren't in this case) in the flipped or forced reference list, grep fails to produce them, but I need them to run the last commands 
-#(even though these commands don't do us any good if we have empty lists, but if we don't they do and thus we still need them)
-#so I just made empty files before hand and if there is something in the lists the files get over-ridden and if not they are what they would have been if grep knew what it was doing.
-echo "" >flipped_SNP_for_forced_ref_flipped
-echo "" >forced_ref_for_forced_ref_flipped
-#Get the forced reference ist
-grep -f <(awk -F"\t" -v OFS="\t" 'BEGIN {complement["A"] = "T"; complement["T"] = "A"; complement["C"] = "G"; complement["G"] = "C";} $5 == complement[$8] && $6 == complement[$7]{print $0}' <(awk '$4=="O"{print $0}' forced_ref_flipped.diff.sites_in_files)|cut -f1,2) $2|cut -f3 >flipped_SNP_for_forced_ref_flipped
+#grep -f <(awk -F"\t" -v OFS="\t" 'BEGIN {complement["A"] = "T"; complement["T"] = "A"; complement["C"] = "G"; complement["G"] = "C";} $5 == complement[$8] && $6 == complement[$7]{print $0}' <(awk '$4=="O"{print $0}' forced_ref_flipped.diff.sites_in_files)|cut -f1,2) $2|cut -f3 >flipped_SNP_for_forced_ref_flipped
 #Get the forced reference list.
-grep -f <(awk -F"\t" -v OFS="\t" 'BEGIN {complement["A"] = "T"; complement["T"] = "A"; complement["C"] = "G"; complement["G"] = "C";} $5 == complement[$8] && $6 == complement[$7]{print $0}' <(awk '$4=="O"{print $0}' forced_ref_flipped.diff.sites_in_files)|cut -f1,2) $2|cut -f3,4 >forced_ref_for_forced_ref_flipped
+#grep -f <(awk -F"\t" -v OFS="\t" 'BEGIN {complement["A"] = "T"; complement["T"] = "A"; complement["C"] = "G"; complement["G"] = "C";} $5 == complement[$8] && $6 == complement[$7]{print $0}' <(awk '$4=="O"{print $0}' forced_ref_flipped.diff.sites_in_files)|cut -f1,2) $2|cut -f3,4 >forced_ref_for_forced_ref_flipped
 #Flipped first and then force reference
-plink --vcf forced_ref_flipped.vcf --allow-extra-chr --flip flipped_SNP_for_forced_ref_flipped --a2-allele forced_ref_for_forced_ref_flipped --keep-allele-order --recode vcf --out forced_flipped_forced_ref_flipped
+#plink --vcf forced_ref_flipped.vcf --allow-extra-chr --flip flipped_SNP_for_forced_ref_flipped --a2-allele forced_ref_for_forced_ref_flipped --keep-allele-order --recode vcf --out forced_flipped_forced_ref_flipped
 #Compare the forced reference to the original vcf file
-vcftools --vcf forced_flipped_forced_ref_flipped.vcf --diff $2 --diff-site --out forced_flipped_forced_ref_flipped
+#vcftools --vcf forced_flipped_forced_ref_flipped.vcf --diff $2 --diff-site --out forced_flipped_forced_ref_flipped
+#Remove those SNPs with a missing allele still left over after fixing flips and forces by first sorting both and then running grep
+vcf-sort forced_flipped >sorted_forced_flipped
+#Gets position of missing snps
+awk '{print $2}' forced_flipped>ff
+vcf-sort forced_flipped.vcf >sorted_forced_flipped.vcf
+#Removes them
+grep -vf ff sorted_forced_flipped.vcf >filteredsff.vcf
+#Filter out SNPs not shared by both filteredsff.vcf and $4
+#Removes and stores headers (filteredsff header is 13 lines long, $4 is also 13 lines long)
+head -n 13 filteredsff.vcf >fsffheader.txt
+tail -n +14 filteredsff.vcf >h_fsff.vcf
+head -n 13 $4 >NAMheader.txt
+tail -n +14 $4 >h_NAM.vcf
+# Makes uncommon list.
+awk '{print $3}' h_fsff.vcf >h_fsff.list
+awk '{print $3}' h_NAM.vcf >h_NAM.list
+sort h_fsff.list >sh_fsff.list
+sort h_NAM.list >sh_NAM.list
+comm -12 sh_fsff.list sh_NAM.list >fstt_NAM.list
+#Filters
+grep -Fwf fstt_NAM.list h_fsff.vcf >filtered_NAM.vcf
+grep -Fwf fstt_NAM.list h_NAM.vcf >filtered_fstt.vcf
+#Filter out snps shared by both which are missing alleles.
+#Get lists of those positions which are missing an allele.
+grep -v "#" filtered_fstt.vcf  | cut -f 1,2,4,5>ffstt.list
+grep -v "#" filtered_NAM.vcf  | cut -f 1,2,4,5>NAM.list
+#Get list of all missing positions
+diff -y ffstt.list NAM.list| grep '|' | cut -f 1,2 >missing_both
+echo "Walrus"
+#Do the filtering
+grep -vf missing_both filtered_fstt.vcf >filteredmissingffstt.vcf
+grep -vf missing_both filtered_NAM.vcf >filteredmissingNAM.vcf
+#Restore Headers
+cat fsffheader.txt filteredmissingffstt.vcf >hfilteredmissingffstt.vcf
+cat NAMheader.txt filteredmissingNAM.vcf >hfilteredmissingNAM.vcf
+#Sort
+vcf-sort hfilteredmissingffstt.vcf >finalwild_9k.vcf
+vcf-sort hfilteredmissingNAM.vcf >finalNAM.vcf
+#Zip vcf files
+bgzip -c finalwild_9k.vcf >finalwild_9k.vcf.gz
+bgzip -c finalNAM.vcf >finalNAM.vcf.gz
