@@ -9,7 +9,6 @@
 #We then merge are full vcf files
 #Connor Depies August, 18, 2017
 set -e
-set -o pipefail
 set -u
 module load plink/1.90b
 module load python3
@@ -89,54 +88,53 @@ plink --vcf flipped.vcf --allow-extra-chr --a2-allele forced_ref_alleles --keep-
 #Compare forced reference to 9k file
 vcftools --vcf forced_flipped.vcf --diff $2 --diff-site --out forced_flipped
 awk '$4=="O"{print $0}' forced_flipped.diff.sites_in_files >forced_flipped
-#Step 6 yields empty files, since there are no forces left to fix, and an empty file is causing a problem in running the program, so I will deal with this problem later
 #Step 6 in tutorial
 #Get the flipped list
-#grep -f <(awk -F"\t" -v OFS="\t" 'BEGIN {complement["A"] = "T"; complement["T"] = "A"; complement["C"] = "G"; complement["G"] = "C";} $5 == complement[$8] && $6 == complement[$7]{print $0}' <(awk '$4=="O"{print $0}' forced_ref_flipped.diff.sites_in_files)|cut -f1,2) $2|cut -f3 >flipped_SNP_for_forced_ref_flipped
+grep -f <(awk -F"\t" -v OFS="\t" 'BEGIN {complement["A"] = "T"; complement["T"] = "A"; complement["C"] = "G"; complement["G"] = "C";} $5 == complement[$8] && $6 == complement[$7]{print $0}' <(awk '$4=="O"{print $0}' forced_ref_flipped.diff.sites_in_files)|cut -f1,2) $2|cut -f3 >flipped_SNP_for_forced_ref_flipped
 #Get the forced reference list.
-#grep -f <(awk -F"\t" -v OFS="\t" 'BEGIN {complement["A"] = "T"; complement["T"] = "A"; complement["C"] = "G"; complement["G"] = "C";} $5 == complement[$8] && $6 == complement[$7]{print $0}' <(awk '$4=="O"{print $0}' forced_ref_flipped.diff.sites_in_files)|cut -f1,2) $2|cut -f3,4 >forced_ref_for_forced_ref_flipped
+grep -f <(awk -F"\t" -v OFS="\t" 'BEGIN {complement["A"] = "T"; complement["T"] = "A"; complement["C"] = "G"; complement["G"] = "C";} $5 == complement[$8] && $6 == complement[$7]{print $0}' <(awk '$4=="O"{print $0}' forced_ref_flipped.diff.sites_in_files)|cut -f1,2) $2|cut -f3,4 >forced_ref_for_forced_ref_flipped
 #Flipped first and then force reference
-#plink --vcf forced_ref_flipped.vcf --allow-extra-chr --flip flipped_SNP_for_forced_ref_flipped --a2-allele forced_ref_for_forced_ref_flipped --keep-allele-order --recode vcf --out forced_flipped_forced_ref_flipped
+plink --vcf forced_flipped.vcf --allow-extra-chr --flip flipped_SNP_for_forced_ref_flipped --a2-allele forced_ref_for_forced_ref_flipped --keep-allele-order --recode vcf --out forced_flipped_forced_ref_flipped
 #Compare the forced reference to the original vcf file
-#vcftools --vcf forced_flipped_forced_ref_flipped.vcf --diff $2 --diff-site --out forced_flipped_forced_ref_flipped
+vcftools --vcf forced_flipped_forced_ref_flipped.vcf --diff $2 --diff-site --out forced_flipped_forced_ref_flipped
+#End of tutorial
 #Remove those SNPs with a missing allele still left over after fixing flips and forces by first sorting both and then running grep
-vcf-sort forced_flipped >sorted_forced_flipped
 #Gets position of missing snps
-awk '{print $2}' forced_flipped>ff
-vcf-sort forced_flipped.vcf >sorted_forced_flipped.vcf
+awk '$4=="O"{print $0}' forced_flipped_forced_ref_flipped.diff.sites_in_files>fffrf1
+awk '{print $1, $2}' fffrf1>fffrf
+#Sorts forced_flipped_forced_ref_flipped.vcf
+vcf-sort forced_flipped_forced_ref_flipped.vcf >fffrf.vcf
 #Removes them
-grep -vf ff sorted_forced_flipped.vcf >filteredsff.vcf
-#Filter out SNPs not shared by both filteredsff.vcf and $4
+grep -vf fffrf fffrf.vcf >filteredfffrf.vcf
+#Filters out SNPs not shared by both filteredsff.vcf and $4
 #Removes and stores headers (filteredsff header is 13 lines long, $4 is also 13 lines long)
-head -n 13 filteredsff.vcf >fsffheader.txt
-tail -n +14 filteredsff.vcf >h_fsff.vcf
+head -n 13 filteredfffrf.vcf >fffrfheader.txt
+tail -n +14 filteredfffrf.vcf >h_fffrf.vcf
 head -n 13 $4 >NAMheader.txt
 tail -n +14 $4 >h_NAM.vcf
 # Makes uncommon list.
-awk '{print $3}' h_fsff.vcf >h_fsff.list
+awk '{print $3}' h_fffrf.vcf >h_fffrf.list
 awk '{print $3}' h_NAM.vcf >h_NAM.list
-sort h_fsff.list >sh_fsff.list
+sort h_fffrf.list >sh_fffrf.list
 sort h_NAM.list >sh_NAM.list
-comm -12 sh_fsff.list sh_NAM.list >fstt_NAM.list
+comm -12 sh_fffrf.list sh_NAM.list >fffrf_NAM.list
 #Filters
-grep -Fwf fstt_NAM.list h_fsff.vcf >filtered_NAM.vcf
-grep -Fwf fstt_NAM.list h_NAM.vcf >filtered_fstt.vcf
+grep -Fwf fffrf_NAM.list h_fffrf.vcf >filtered_NAM.vcf
+grep -Fwf fffrf_NAM.list h_NAM.vcf >filtered_fffrf.vcf
 #Filter out snps shared by both which are missing alleles.
 #Get lists of all major and minor alleles in both files.
-grep -v "#" filtered_fstt.vcf  | cut -f 1,2,4,5>ffstt.list
+grep -v "#" filtered_fffrf.vcf  | cut -f 1,2,4,5>fffrf.list
 grep -v "#" filtered_NAM.vcf  | cut -f 1,2,4,5>NAM.list
 #Get list of all missing positions
-#diff --suppress-common-lines -y ffstt.list NAM.list| cut -f 1,2 >missing_both
-#For some reason diff would not run when I put it in this file, so I had to put it in another program and then call it here and for some inexplicable reason, everything worked. Why this should be I do not know.
-./helperprogram.sh
+diff --suppress-common-lines -y fffrf.list NAM.list| cut -f 1,2 >missing_both
 #Do the filtering
-grep -vf missing_both filtered_fstt.vcf >filteredmissingffstt.vcf
+grep -vf missing_both filtered_fffrf.vcf >filteredmissingfffrf.vcf
 grep -vf missing_both filtered_NAM.vcf >filteredmissingNAM.vcf
 #Restore Headers
-cat fsffheader.txt filteredmissingffstt.vcf >hfilteredmissingffstt.vcf
+cat fffrfheader.txt filteredmissingfffrf.vcf >hfilteredmissingfffrf.vcf
 cat NAMheader.txt filteredmissingNAM.vcf >hfilteredmissingNAM.vcf
 #Sort
-vcf-sort hfilteredmissingffstt.vcf >finalwild_9k.vcf
+vcf-sort hfilteredmissingfffrf.vcf >finalwild_9k.vcf
 vcf-sort hfilteredmissingNAM.vcf >finalNAM.vcf
 #bzip vcf files
 bgzip -c finalwild_9k.vcf >finalwild_9k.vcf.gz
@@ -145,3 +143,22 @@ bgzip -c finalNAM.vcf >finalNAM.vcf.gz
 tabix -p vcf finalwild_9k.vcf.gz
 tabix -p vcf finalNAM.vcf.gz
 echo "Finished running Program. Hurray!"
+#Move unnecessary files to tempfile directory
+mkdir tempfile
+rm NAMheader.txt
+rm fffrfheader.txt
+mv *filtered* ./tempfile
+mv *forced* ./tempfile
+mv *flipped* ./tempfile
+mv missing_both ./tempfile
+mv plink.log ./tempfile
+mv dio* ./tempfile
+mv *ff* ./tempfile
+mv h_NAM.* ./tempfile
+mv *.list ./tempfile
+mv sortedwild_9k.vcf ./tempfile
+mv wild_9k.* ./tempfile
+echo "Files Moved"
+
+
+
