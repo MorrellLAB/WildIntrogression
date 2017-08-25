@@ -14,6 +14,8 @@ set -u
 module load plink/1.90b
 module load python3
 module load vcftools_ML/0.1.14
+module load samtools_ML/1.3.1
+module load htslib_ML/1.4.0
 map=$1
 vcf=$2
 hmp=$3
@@ -87,7 +89,7 @@ plink --vcf flipped.vcf --allow-extra-chr --a2-allele forced_ref_alleles --keep-
 #Compare forced reference to 9k file
 vcftools --vcf forced_flipped.vcf --diff $2 --diff-site --out forced_flipped
 awk '$4=="O"{print $0}' forced_flipped.diff.sites_in_files >forced_flipped
-#Step 6 yields empty files, since there are no forces left to fix, and an empty file is causing a problem in running the program, so I will deal
+#Step 6 yields empty files, since there are no forces left to fix, and an empty file is causing a problem in running the program, so I will deal with this problem later
 #Step 6 in tutorial
 #Get the flipped list
 #grep -f <(awk -F"\t" -v OFS="\t" 'BEGIN {complement["A"] = "T"; complement["T"] = "A"; complement["C"] = "G"; complement["G"] = "C";} $5 == complement[$8] && $6 == complement[$7]{print $0}' <(awk '$4=="O"{print $0}' forced_ref_flipped.diff.sites_in_files)|cut -f1,2) $2|cut -f3 >flipped_SNP_for_forced_ref_flipped
@@ -120,12 +122,13 @@ comm -12 sh_fsff.list sh_NAM.list >fstt_NAM.list
 grep -Fwf fstt_NAM.list h_fsff.vcf >filtered_NAM.vcf
 grep -Fwf fstt_NAM.list h_NAM.vcf >filtered_fstt.vcf
 #Filter out snps shared by both which are missing alleles.
-#Get lists of those positions which are missing an allele.
+#Get lists of all major and minor alleles in both files.
 grep -v "#" filtered_fstt.vcf  | cut -f 1,2,4,5>ffstt.list
 grep -v "#" filtered_NAM.vcf  | cut -f 1,2,4,5>NAM.list
 #Get list of all missing positions
-diff -y ffstt.list NAM.list| grep '|' | cut -f 1,2 >missing_both
-echo "Walrus"
+#diff --suppress-common-lines -y ffstt.list NAM.list| cut -f 1,2 >missing_both
+#For some reason diff would not run when I put it in this file, so I had to put it in another program and then call it here and for some inexplicable reason, everything worked. Why this should be I do not know.
+./helperprogram.sh
 #Do the filtering
 grep -vf missing_both filtered_fstt.vcf >filteredmissingffstt.vcf
 grep -vf missing_both filtered_NAM.vcf >filteredmissingNAM.vcf
@@ -135,6 +138,10 @@ cat NAMheader.txt filteredmissingNAM.vcf >hfilteredmissingNAM.vcf
 #Sort
 vcf-sort hfilteredmissingffstt.vcf >finalwild_9k.vcf
 vcf-sort hfilteredmissingNAM.vcf >finalNAM.vcf
-#Zip vcf files
+#bzip vcf files
 bgzip -c finalwild_9k.vcf >finalwild_9k.vcf.gz
 bgzip -c finalNAM.vcf >finalNAM.vcf.gz
+#Apply tabix
+tabix -p vcf finalwild_9k.vcf.gz
+tabix -p vcf finalNAM.vcf.gz
+echo "Finished running Program. Hurray!"
