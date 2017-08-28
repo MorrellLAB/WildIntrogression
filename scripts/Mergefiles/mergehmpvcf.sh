@@ -10,6 +10,8 @@
 #Connor Depies August, 18, 2017
 set -e
 set -u
+#The command below prevented various commands from operating properly, so I commented it out.
+#set -o pipefail
 module load plink/1.90b
 module load python3
 module load vcftools_ML/0.1.14
@@ -62,6 +64,7 @@ plink --ped diogenes.ped --map diogenes.map --allow-extra-chr
 mv plink.bed diogenes.bed
 mv plink.bim diogenes.bim
 mv plink.fam diogenes.fam
+mv plink.log diogenes.log
 #Makes new vcf_file
 plink --bfile diogenes --recode vcf-iid --out wild_9k --allow-extra-chr
 #Fixes flips and forces
@@ -119,8 +122,8 @@ sort h_fffrf.list >sh_fffrf.list
 sort h_NAM.list >sh_NAM.list
 comm -12 sh_fffrf.list sh_NAM.list >fffrf_NAM.list
 #Filters
-grep -Fwf fffrf_NAM.list h_fffrf.vcf >filtered_NAM.vcf
-grep -Fwf fffrf_NAM.list h_NAM.vcf >filtered_fffrf.vcf
+grep -Fwf fffrf_NAM.list h_fffrf.vcf >filtered_fffrf.vcf
+grep -Fwf fffrf_NAM.list h_NAM.vcf >filtered_NAM.vcf
 #Filter out snps shared by both which are missing alleles.
 #Get lists of all major and minor alleles in both files.
 grep -v "#" filtered_fffrf.vcf  | cut -f 1,2,4,5>fffrf.list
@@ -142,7 +145,8 @@ bgzip -c finalNAM.vcf >finalNAM.vcf.gz
 #Apply tabix
 tabix -p vcf finalwild_9k.vcf.gz
 tabix -p vcf finalNAM.vcf.gz
-echo "Finished running Program. Hurray!"
+vcf-merge finalwild_9k.vcf.gz finalNAM.vcf.gz| bgzip -c > merged_wild_domesticated.vcf.gz
+gunzip merged_wild_domesticated.vcf.gz
 #Move unnecessary files to tempfile directory
 mkdir tempfile
 rm NAMheader.txt
@@ -151,14 +155,41 @@ mv *filtered* ./tempfile
 mv *forced* ./tempfile
 mv *flipped* ./tempfile
 mv missing_both ./tempfile
-mv plink.log ./tempfile
 mv dio* ./tempfile
 mv *ff* ./tempfile
 mv h_NAM.* ./tempfile
 mv *.list ./tempfile
 mv sortedwild_9k.vcf ./tempfile
 mv wild_9k.* ./tempfile
-echo "Files Moved"
-
-
-
+#Runs IBS and Allele Count distance matrices
+plink --vcf finalNAM.vcf --distance square ibs --allow-extra-chr
+mv plink.log NAM.log
+mv plink.mibs NAM.mibs
+mv plink.mibs.id NAM.mibs.id
+plink --vcf finalwild_9k.vcf --distance square ibs --allow-extra-chr
+mv plink.log wild.log
+mv plink.mibs wild.mibs
+mv plink.mibs.id wild.mibs.id
+plink --vcf merged_wild_domesticated.vcf --distance square ibs --allow-extra-chr
+mv plink.log merged.log
+mv plink.mibs merged.mibs
+mv plink.mibs.id merged.mibs.id
+plink --vcf finalNAM.vcf --distance square --allow-extra-chr
+mv plink.log NAMdist.log
+mv plink.dist NAM.dist
+mv plink.dist.id NAM.dist.id
+plink --vcf finalwild_9k.vcf --distance square --allow-extra-chr
+mv plink.log wilddist.log
+mv plink.dist wild.dist
+mv plink.dist.id wild.dist.id
+plink --vcf merged_wild_domesticated.vcf --distance square --allow-extra-chr
+mv plink.log mergeddist.log
+mv plink.dist merged.mibs
+mv plink.dist.id merged.dist.id
+rm plink.nosex
+#Move all the distance matrices to a new directory
+mkdir distance_matrices
+mv *.log ./distance_matrices
+mv *.dist* ./distance_matrices
+mv *.mibs* ./distance_matrices
+echo "Program ran successfully"
