@@ -139,6 +139,7 @@ cat NAMheader.txt filteredmissingNAM.vcf >hfilteredmissingNAM.vcf
 #Sort
 vcf-sort hfilteredmissingfffrf.vcf >finalwild_9k.vcf
 vcf-sort hfilteredmissingNAM.vcf >finalNAM.vcf
+#Merge with VCF tools
 #bzip vcf files
 bgzip -c finalwild_9k.vcf >finalwild_9k.vcf.gz
 bgzip -c finalNAM.vcf >finalNAM.vcf.gz
@@ -147,6 +148,18 @@ tabix -p vcf finalwild_9k.vcf.gz
 tabix -p vcf finalNAM.vcf.gz
 vcf-merge finalwild_9k.vcf.gz finalNAM.vcf.gz| bgzip -c > merged_wild_domesticated.vcf.gz
 gunzip merged_wild_domesticated.vcf.gz
+#Merged by Hand, since for some reason it keeps more snps (although the distance matrices and trees produced by the file produced by hand and the one produced by vcftools are very similar, as should be expected.)
+#Also, VCF merge takes a really long time.
+#Remove information lines at beginning of NAM file
+cut -f1,2,3,4,5,6,7,8,9 --complement finalNAM.vcf >NAMformerge.vcf
+#Remove headers except for labels
+tail -n +13 NAMformerge.vcf >NAMformerge-h.vcf
+tail -n +13 finalwild_9k.vcf >finalwild_9k-h.vcf
+head -12 finalwild_9k.vcf>header.txt
+#Paste side by side
+paste finalwild_9k-h.vcf NAMformerge-h.vcf >merged-h.vcf
+#Add back header
+cat header.txt merged-h.vcf >merged_by_hand.vcf
 #Move unnecessary files to tempfile directory
 mkdir tempfile
 rm NAMheader.txt
@@ -161,7 +174,10 @@ mv h_NAM.* ./tempfile
 mv *.list ./tempfile
 mv sortedwild_9k.vcf ./tempfile
 mv wild_9k.* ./tempfile
-#Runs IBS and Allele Count distance matrices
+mv NAMformerge* ./tempfile
+mv finalwild_9k-h.vcf ./tempfile
+mv merged-h.vcf ./tempfile
+#Runs IBS and Allele Count distance matrices from plink
 plink --vcf finalNAM.vcf --distance square ibs --allow-extra-chr
 mv plink.log NAM.log
 mv plink.mibs NAM.mibs
@@ -174,19 +190,26 @@ plink --vcf merged_wild_domesticated.vcf --distance square ibs --allow-extra-chr
 mv plink.log merged.log
 mv plink.mibs merged.mibs
 mv plink.mibs.id merged.mibs.id
+plink --vcf merged_by_hand.vcf --distance square ibs --allow-extra-chr
+mv plink.mibs merged_by_hand.mibs
+mv plink.log merged_by_hand.log
+mv plink.dist.id merged_by_hand.mibs.id
 plink --vcf finalNAM.vcf --distance square --allow-extra-chr
 mv plink.log NAMdist.log
 mv plink.dist NAM.dist
-mv plink.dist.id NAM.dist.id
+mv plink.mibs.id NAM.dist.id
 plink --vcf finalwild_9k.vcf --distance square --allow-extra-chr
 mv plink.log wilddist.log
 mv plink.dist wild.dist
 mv plink.dist.id wild.dist.id
-plink --vcf merged_wild_domesticated.vcf --distance square --allow-extra-chr
-mv plink.log mergeddist.log
-mv plink.dist merged.mibs
-mv plink.dist.id merged.dist.id
-rm plink.nosex
+#plink --vcf merged_wild_domesticated.vcf --distance square --allow-extra-chr
+#mv plink.log mergeddist.log
+#mv plink.dist merged.dist
+#mv plink.dist.id merged.dist.id
+plink --vcf merged_by_hand.vcf --distance square --allow-extra-chr
+mv plink.dist merged_by_hand.dist
+mv plink.log merged_by_handdist.log
+mv plink.dist.id merged_by_hand.dist.id
 #Move all the distance matrices to a new directory
 mkdir distance_matrices
 mv *.log ./distance_matrices
