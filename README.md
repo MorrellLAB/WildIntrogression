@@ -17,6 +17,20 @@
     WBDC311
     WBDC344
 
+- Introgressed lines in Liana's Population (Nice et al. 2016)
+
+    We have exome capture resequencing data for these lines. 5 out of 7 of the lines \
+    below have already been read mapped and realigned. The 2 samples that still need \
+    to be read mapped are in **bold**. The `*finished_realigned_reheader.bam` files are located in \
+    `/home/morrellp/liux1299/Shared/Projects/Introgressed/sequence_handling/LianaPop_introgressed/realigned`
+   - WBDC_016
+   - **WBDC_092**
+   - WBDC_172
+   - WBDC_173
+   - WBDC_182
+   - WBDC_227
+   - **WBDC_350**
+
 - It would also be worth looking for high IBS to cultivated lines in wild barley from \
     Azerbaijan and similar regions where the phenotype is most similar to cultivated barley. \
     This would include:
