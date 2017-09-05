@@ -140,8 +140,8 @@ cat NAMheader.txt filteredmissingNAM.vcf >hfilteredmissingNAM.vcf
 #Sort
 vcf-sort hfilteredmissingfffrf.vcf >finalwild_9k.vcf
 vcf-sort hfilteredmissingNAM.vcf >finalNAM.vcf
-#Merge with Li's code for the purpose
-perl /panfs/roc/groups/9/morrellp/llei/Introgressed_line/script/merge_vcf.pl finalNAM.vcf finalwild_9k.vcf >merged_wild_domesticated.vcf
+#Merge with Li's code that avoids the problems with tabix
+~/WildIntrogression/scripts/merge_vcf.pl finalwild_9k.vcf finalNAM.vcf finalwild_9k.vcf finalNAM.vcf >merged_wild_domesticated.vcf
 #Move unnecessary files to tempfile directory
 mkdir tempfile
 rm NAMheader.txt
