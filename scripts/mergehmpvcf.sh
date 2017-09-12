@@ -6,6 +6,7 @@
 #3 ) A genotype file
 #These three files are filtered of unshared snps, then converted to a full vcf file. Then the program fixes flip and force errors, removes snps which don't have both alleles.
 #4 ) A full vcf file
+# The paths to two programs must also be inputted: one of them written by Tom to convert hmp to plink, the other by Li to merge vcf files:
 #We then merge are full vcf files
 #Connor Depies August, 18, 2017
 set -e
@@ -22,6 +23,8 @@ map=$1
 vcf=$2
 hmp=$3
 vcf2=$4
+hmp_to_PLINK=$5
+merge_vcf=$6
 # Stores headers
 head -n 8 $2  > vcfheader.txt 
 # Make sure you have 8 lines in your vcfheader
@@ -44,7 +47,7 @@ grep -Fwf common3.list $3 > almost.hmp.txt
 cat vcfheader.txt almost.vcf > diogenes.vcf
 cat hmpheader.txt almost.hmp.txt > diogenes.hmp.txt
 # Runs a program which makes a ped file
-python3 /panfs/roc/groups/9/morrellp/depie014/hmp_to_PLINK.py diogenes.hmp.txt diogenes.map diogenes.vcf > diogenes.ped
+python3 $5 diogenes.hmp.txt diogenes.map diogenes.vcf > diogenes.ped
 # removes unnecessary files
 rm vcfheader.txt
 rm hmpheader.txt
@@ -141,7 +144,7 @@ cat NAMheader.txt filteredmissingNAM.vcf >hfilteredmissingNAM.vcf
 vcf-sort hfilteredmissingfffrf.vcf >finalwild_9k.vcf
 vcf-sort hfilteredmissingNAM.vcf >finalNAM.vcf
 #Merge with Li's code that avoids the problems with tabix
-~/WildIntrogression/scripts/merge_vcf.pl finalwild_9k.vcf finalNAM.vcf finalwild_9k.vcf finalNAM.vcf >merged_wild_domesticated.vcf
+ $6 finalwild_9k.vcf finalNAM.vcf finalwild_9k.vcf finalNAM.vcf >merged_wild_domesticated.vcf
 #Move unnecessary files to tempfile directory
 mkdir tempfile
 rm NAMheader.txt
