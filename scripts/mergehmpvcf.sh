@@ -176,6 +176,10 @@ plink --vcf merged_wild_domesticated.vcf --distance square --allow-extra-chr
 mv plink.log mergeddist.log
 mv plink.dist merged.dist
 mv plink.dist.id merged.dist.id
+plink --vcf finalNAM.vcf --distance square --allow-extra-chr
+mv plink.log NAMdist.log
+mv plink.dist NAM.dist
+mv plink.dist.id NAM.dist.id
 #Move all the distance matrices to a new directory
 mkdir distance_matrices
 mv *.log ./distance_matrices
