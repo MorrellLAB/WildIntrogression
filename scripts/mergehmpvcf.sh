@@ -144,7 +144,7 @@ cat NAMheader.txt filteredmissingNAM.vcf >hfilteredmissingNAM.vcf
 vcf-sort hfilteredmissingfffrf.vcf >finalwild_9k.vcf
 vcf-sort hfilteredmissingNAM.vcf >finalNAM.vcf
 #Merge with Li's code that avoids the problems with tabix
- $6 finalwild_9k.vcf finalNAM.vcf finalwild_9k.vcf finalNAM.vcf >merged_wild_domesticated.vcf
+ $6 finalwild_9k.vcf finalNAM.vcf >merged_wild_domesticated.vcf
 #Move unnecessary files to tempfile directory
 mkdir tempfile
 rm NAMheader.txt
