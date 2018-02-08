@@ -39,7 +39,7 @@ sort hmp.list >sortedhmp.list
 comm -12 sortedvcf.list sortedmap.list > common1.list
 comm -12 sortedvcf.list sortedhmp.list > common2.list
 comm -12 common1.list common2.list > common3.list
-# Creates new lists with files with extra positions removed
+# Creates new files with extra positions removed
 grep -Fwf common3.list $1 > diogenes.map
 grep -Fwf common3.list $2 > almost.vcf
 grep -Fwf common3.list $3 > almost.hmp.txt
