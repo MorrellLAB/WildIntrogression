@@ -2,7 +2,7 @@
 #Connor Depies Aug 17, 2017
 #This program takes 4 inputs:
 #1 ) A map file
-#2 ) A partial vcf file
+#2 ) A partial vcf file with the same SNPs as the 4 (I could have just used four, but I did not have that file when I first started writing this.)
 #3 ) A genotype file
 #These three files are filtered of unshared snps, then converted to a full vcf file. Then the program fixes flip and force errors, removes snps which don't have both alleles.
 #4 ) A full vcf file
@@ -97,9 +97,9 @@ vcftools --vcf forced_flipped.vcf --diff $2 --diff-site --out forced_flipped
 awk '$4=="O"{print $0}' forced_flipped.diff.sites_in_files >forced_flipped
 #Step 6 in tutorial
 #Get the flipped list
-grep -f <(awk -F"\t" -v OFS="\t" 'BEGIN {complement["A"] = "T"; complement["T"] = "A"; complement["C"] = "G"; complement["G"] = "C";} $5 == complement[$8] && $6 == complement[$7]{print $0}' <(awk '$4=="O"{print $0}' forced_ref_flipped.diff.sites_in_files)|cut -f1,2) $2|cut -f3 >flipped_SNP_for_forced_ref_flipped
+grep -f <(awk -F"\t" -v OFS="\t" 'BEGIN {complement["A"] = "T"; complement["T"] = "A"; complement["C"] = "G"; complement["G"] = "C";} $5 == complement[$8] && $6 == complement[$7]{print $0}' <(awk '$4=="O"{print $0}' forced_flipped.diff.sites_in_files)|cut -f1,2) $2|cut -f3 >flipped_SNP_for_forced_ref_flipped
 #Get the forced reference list.
-grep -f <(awk -F"\t" -v OFS="\t" 'BEGIN {complement["A"] = "T"; complement["T"] = "A"; complement["C"] = "G"; complement["G"] = "C";} $5 == complement[$8] && $6 == complement[$7]{print $0}' <(awk '$4=="O"{print $0}' forced_ref_flipped.diff.sites_in_files)|cut -f1,2) $2|cut -f3,4 >forced_ref_for_forced_ref_flipped
+grep -f <(awk -F"\t" -v OFS="\t" 'BEGIN {complement["A"] = "T"; complement["T"] = "A"; complement["C"] = "G"; complement["G"] = "C";} $5 == complement[$8] && $6 == complement[$7]{print $0}' <(awk '$4=="O"{print $0}' forced_flipped.diff.sites_in_files)|cut -f1,2) $2|cut -f3,4 >forced_ref_for_forced_ref_flipped
 #Flipped first and then force reference
 plink --vcf forced_flipped.vcf --allow-extra-chr --flip flipped_SNP_for_forced_ref_flipped --a2-allele forced_ref_for_forced_ref_flipped --keep-allele-order --recode vcf --out forced_flipped_forced_ref_flipped
 #Compare the forced reference to the original vcf file
@@ -125,14 +125,14 @@ awk '{print $3}' h_NAM.vcf >h_NAM.list
 sort h_fffrf.list >sh_fffrf.list
 sort h_NAM.list >sh_NAM.list
 comm -12 sh_fffrf.list sh_NAM.list >fffrf_NAM.list
-#Filters
+#Filters whatever flipping and forcing could not fix.
 grep -Fwf fffrf_NAM.list h_fffrf.vcf >filtered_fffrf.vcf
 grep -Fwf fffrf_NAM.list h_NAM.vcf >filtered_NAM.vcf
 #Filter out snps shared by both which are missing alleles.
 #Get lists of all major and minor alleles in both files.
 grep -v "#" filtered_fffrf.vcf  | cut -f 1,2,4,5>fffrf.list
 grep -v "#" filtered_NAM.vcf  | cut -f 1,2,4,5>NAM.list
-#Get list of all missing positions
+#Get list of all missing positions If you get an empty file at the end, check missing_both, it may have empty lines, I don't know why. This happened to me while working on a different data set by hand, so I just removed the blank lines with vim.
 diff --suppress-common-lines -y fffrf.list NAM.list| cut -f 1,2 >missing_both
 #Do the filtering
 grep -vf missing_both filtered_fffrf.vcf >filteredmissingfffrf.vcf
