@@ -15,3 +15,5 @@ Please notice that:
 
 `15landrace_forced_flipped_forced_ref_flipped_test_BOPA.recode.vcf`: 15 landraces vcf file
 
+
+For Connor, `hetero_missing_318WBDC_forced_flipped_forced_ref_flipped_test_BOPA.recode.vcf` is the correct file you can feed plink and set the --geno as "0.15", then plink will filter out all variants with missing call rates exceeding the provided value (0.15) to be removed.
