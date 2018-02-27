@@ -6,4 +6,12 @@ Please notice that:
 
 - There are 74 or 33 SNPs are either missing reference or alternative in the alchemy data file
 
-- You may need to treat the heterozygotes as missing and filter out the SNPs with certain missing individuals.
+
+`forced_flipped_forced_ref_flipped_test_BOPA.vcf`: combined 318 WBDC and 15 landraces vcf file
+
+`hetero_missing_318WBDC_forced_flipped_forced_ref_flipped_test_BOPA.recode.vcf`: treat the heterozygotes as missing data
+
+`318WBDC_forced_flipped_forced_ref_flipped_test_BOPA.recode.vcf`: 318 WBDC vcf file
+
+`15landrace_forced_flipped_forced_ref_flipped_test_BOPA.recode.vcf`: 15 landraces vcf file
+
