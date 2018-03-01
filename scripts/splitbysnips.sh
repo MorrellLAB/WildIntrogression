@@ -2,7 +2,7 @@
 #Connor Depies
 #10/30/2017
 #Program to split a vcf file into 25 snp intervals and analyze their IBD with plink
-#1) sorted qVCF file
+#1) sorted VCF file
 # Read the file in parameter and fill the array named "array"
 # from https://stackoverflow.com/questions/20294918/extract-file-contents-into-array-using-bash
 getArray() {
@@ -39,11 +39,11 @@ do
     # Create an array containing SNP names from each Chromosome
     getArray $i
      # Find IBD of each Chromosome
-    plink --vcf $1 --extract ${i} --genome --out ${i}_out  --allow-extra-chr;
+    plink --vcf $1 --extract ${i} --genome --geno .15 --out ${i}_out  --allow-extra-chr;
     # Find length of the array
     len=${#array[@]}
-    # Create sliding windows each containing 100 SNPS from a chromosome, and moving by 10 SNPs each iteration
-    for j in `seq 1 10 $len`;
+    # Create sliding windows each containing 100 SNPS from a chromosome, and moving by 25 SNPs each iteration
+    for j in `seq 1 25 $len`;
     do
         if (("$j+100"<"$len"))
         then 
@@ -51,7 +51,7 @@ do
             # Write each of these lists of 100 SNP windows to a file
             echo ${array[@]:$j:100} >${i}${j}_extract.txt
             # Find IBD of this interval
-            plink --vcf $1 --extract ${i}${j}_extract.txt --genome --out ${i}${j}_out --allow-extra-chr
+            plink --vcf $1 --extract ${i}${j}_extract.txt --genome --geno .15 --out ${i}${j}_out --allow-extra-chr
         fi 
     done
 done
