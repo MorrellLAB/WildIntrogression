@@ -1,4 +1,5 @@
 #!/bin/env bash
+#Connor Depies
 #08/03/2018
 # Fixes flip and force errors so that two vcf files which have already been sorted and filtered so that they have the same SNPs 
 # will also have the same major and minor allele assignments and no missing values.
@@ -13,6 +14,9 @@
 # will also have the same major and minor allele assignments and no missing values.
 # Takes two vcf files.
 # Adapted from Li Lei's Tutorial
+set -e
+set -u
+set -o pipefail
 module load plink/1.90b
 module load vcftools_ML/0.1.14
 vcf1=$1
