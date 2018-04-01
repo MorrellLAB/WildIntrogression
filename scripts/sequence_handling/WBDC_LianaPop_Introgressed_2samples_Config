@@ -167,7 +167,7 @@ RM_QSUB="mem=22gb,nodes=1:ppn=16,walltime=24:00:00"
 #       If you're using the list from Quality_Trimming
 #       TRIMMED_LIST=${OUT_DIR}/Quality_Trimming/${PROJECT}_trimmed_quality.txt
 #       Include the full file path.
-TRIMMED_LIST=${OUT_DIR}/Adapter_Trimming/${PROJECT}_trimmed_adapters.txt
+TRIMMED_LIST=/home/morrellp/liux1299/Shared/Projects/Introgressed/sequence_handling/LianaPop_introgressed/Adapter_Trimming/LianaPop_introgressed_trimmed_adapters.txt
 
 #   How are trimmed forward samples named?
 #       If using the Adapter_Trimming handler
@@ -223,7 +223,7 @@ GAP=8
 EXTENSION=1
 
 #       What is our clipping penalty?
-CLIP=5
+CLIP=6
 
 #       What is our unpaired read penatly?
 UNPAIRED=9
