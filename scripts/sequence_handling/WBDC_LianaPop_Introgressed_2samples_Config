@@ -317,7 +317,7 @@ RTC_QSUB="mem=22gb,nodes=1:ppn=16,walltime=24:00:00"
 #   Where is the list of finished BAM files?
 #       To generate this list, use sample_list_generator.sh
 #       located at /sequence_handling/HelperScripts/sample_list_generator.sh
-RTC_BAM_LIST=
+RTC_BAM_LIST=/home/morrellp/liux1299/Shared/Projects/Introgressed/sequence_handling/LianaPop_introgressed/SAM_Processing/SAMtools/finished_bam_list.txt
 
 ############################################
 #########     Indel_Realigner      #########
