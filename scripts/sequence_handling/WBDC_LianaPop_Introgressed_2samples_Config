@@ -262,7 +262,7 @@ VERBOSITY='all'
 #   Specify how you would like your SAM files to be processed
 #       Choose from:
 #           'picard' (recommended) or 'samtools'
-METHOD=
+METHOD=samtools
 
 #   What are our QSub settings for SAM_Processing?
 #       Below are the recommended settings
@@ -271,7 +271,7 @@ SP_QSUB="mem=22gb,nodes=1:ppn=16,walltime=24:00:00"
 #   Where is the list of read-mapped samples?
 #       To generate this list, use sample_list_generator.sh
 #       located at /sequence_handling/HelperScripts/sample_list_generator.sh
-MAPPED_LIST=
+MAPPED_LIST=/home/morrellp/liux1299/Shared/Projects/Introgressed/sequence_handling/LianaPop_introgressed/Read_Mapping/mapped_list.txt
 
 #   The next two variables are only used if processing with Picard
 #   If using SAMtools, leave these variables blank
