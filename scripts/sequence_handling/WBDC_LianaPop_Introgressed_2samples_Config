@@ -330,12 +330,12 @@ IR_QSUB="mem=22gb,nodes=1:ppn=16,walltime=24:00:00"
 #   Where is the list of finished BAM files?
 #       To generate this list, use sample_list_generator.sh
 #       located at /sequence_handling/HelperScripts/sample_list_generator.sh
-IR_BAM_LIST=
+IR_BAM_LIST=/home/morrellp/liux1299/Shared/Projects/Introgressed/sequence_handling/LianaPop_introgressed/SAM_Processing/SAMtools/finished_bam_list.txt
 
 #   Where is the list of realigner targets files (.intervals)?
 #       To generate this list, use sample_list_generator.sh
 #       located at /sequence_handling/HelperScripts/sample_list_generator.sh
-IR_TARGETS=
+IR_TARGETS=/home/morrellp/liux1299/Shared/Projects/Introgressed/sequence_handling/LianaPop_introgressed/Realigner_Target_Creator/rtc_list.txt
 
 #   IR_BAM_LIST and IR_TARGETS must have the same sample order.
 
