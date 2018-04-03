@@ -19,6 +19,8 @@
 
 - Introgressed lines in Liana's Population (Nice et al. 2016)
 
+    **Update 2018-04-02:** finished realigning remaining 2 bam files below
+
     We have exome capture resequencing data for these lines. 5 out of 7 of the lines \
     below have already been read mapped and realigned. The 2 samples that still need \
     to be read mapped are in **bold**. The `*finished_realigned_reheader.bam` files are located in \
