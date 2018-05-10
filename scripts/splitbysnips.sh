@@ -41,7 +41,7 @@ do
     # Find IBD of each Chromosome
     # Makes a frqx file which contains allele frequencies. We then use this in the --genome command to correct for the fact that our samples are not in HArdy-Weinberg equilibrium.
     plink --vcf $1 --allow-extra-chr -freqx --allow-extra-chr --out /panfs/roc/groups/9/morrellp/depie014/introgression/IBD2/fullgenomefile/${i}_out
-    plink --vcf $1 --extract ${i} --genome --geno .15 ----read-freq /panfs/roc/groups/9/morrellp/depie014/introgression/IBD2/fullgenomefile/${i}_out.frqx --out /panfs/roc/groups/9/morrellp/depie014/introgression/IBD2/fullgenomefile/${i}_out  --allow-extra-chr;
+    plink --vcf $1 --extract ${i} --genome --geno .15 --read-freq /panfs/roc/groups/9/morrellp/depie014/introgression/IBD2/fullgenomefile/${i}_out.frqx --out /panfs/roc/groups/9/morrellp/depie014/introgression/IBD2/fullgenomefile/${i}_out  --allow-extra-chr;
     # Find length of the array
     len=${#array[@]}
     # Create sliding windows each containing 100 SNPS from a chromosome, and moving by 25 SNPs each iteration
