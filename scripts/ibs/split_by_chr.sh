@@ -1,14 +1,11 @@
 #!/bin/bash
 
+set -e
+set -o
+
 #   User provided arguments
 VCF=$1
-WIN_SIZE=$2
-STEP_SIZE=$3
-OUT_DIR=$4
-
-#   Testing lines, remove once done
-VCF=/home/morrellp/liux1299/Shared/Projects/Introgressed/vcf/merged_dom_and_wbdc_318_BOPA_sorted.vcf
-OUT_DIR=/home/morrellp/liux1299/scratch/test
+OUT_DIR=$2
 
 function splitByChr() {
     local vcf=$1
