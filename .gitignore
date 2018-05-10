@@ -10,3 +10,6 @@
 #   Ignore macOS Desktop Services Store file
 *.DS_Store
 *._.DS_Store
+
+#   Ignore PyCharm specific files
+*.idea
