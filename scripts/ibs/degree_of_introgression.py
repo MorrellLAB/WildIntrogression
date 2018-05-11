@@ -27,12 +27,6 @@ def read_file(input_file, introg_dict):
     return introg_dict
 
 
-# fp = '/Users/chaochih/Dropbox/Projects/Wild_Introgression/Analyses/IBS/Results/reformatted_wild_vs_cult_introg/chr7_snpsList_150-250_reformat_genome_z2_0.90_wild_vs_cult.txt'
-# fp2 = '/Users/chaochih/Dropbox/Projects/Wild_Introgression/Analyses/IBS/Results/reformatted_wild_vs_cult_introg/chr7_snpsList_125-225_reformat_genome_z2_0.90_wild_vs_cult.txt'
-# test = read_file(fp)
-# file_list = '/Users/chaochih/Dropbox/Projects/Wild_Introgression/Analyses/IBS/Results/reformatted_wild_vs_cult_introg/wild_vs_cult_list.txt'
-
-
 def main(file_list):
     #   Read in list of files
     wc_list = read_list_of_files(input_list=file_list)
