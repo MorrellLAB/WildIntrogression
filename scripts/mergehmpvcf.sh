@@ -1,5 +1,6 @@
 #!/bin/env bash
 #Connor Depies Aug 17, 2017
+#This program is very specific to the data I have been working with, so I do not suggest anyone use it for anything other than the following files in order: iSelect_9k.map, sorted_all_9k_masked_90idt.vcf, genome.hmp.txt and NAM_9k_Final.vcf
 #This program takes 4 inputs:
 #1 ) A map file
 #2 ) A partial vcf file with the same SNPs as the 4 (I could have just used four, but I did not have that file when I first started writing this.)
@@ -7,11 +8,11 @@
 #These three files are filtered of unshared snps, then converted to a full vcf file. Then the program fixes flip and force errors, removes snps which don't have both alleles.
 #4 ) A full vcf file
 # The paths to two programs must also be inputted: one of them written by Tom to convert hmp to plink, the other by Li to merge vcf files:
-#We then merge are full vcf files
+#We then merge the vcf files
 #Connor Depies August, 18, 2017
 set -e
 set -u
-#The command below prevented various commands from operating properly, so I commented it out.
+#The command below prevented various commands from operating properly, so I commented it out. I believe it has to do with one of the files outputted being blank, because no SNPs of that category were found
 #set -o pipefail
 module load plink/1.90b
 module load python3
@@ -180,6 +181,10 @@ plink --vcf finalNAM.vcf --distance square --allow-extra-chr
 mv plink.log NAMdist.log
 mv plink.dist NAM.dist
 mv plink.dist.id NAM.dist.id
+plink --vcf merged_wild_domesticated.vcf --distance square ibs --allow-extra-chr
+mv plink.log merged.log
+mv plink.mibs merged.mibs
+mv plink.mibs.id merged.mibs.id
 #Move all the distance matrices to a new directory
 mkdir distance_matrices
 mv *.log ./distance_matrices
