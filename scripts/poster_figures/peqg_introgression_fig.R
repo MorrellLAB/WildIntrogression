@@ -28,10 +28,12 @@ main <- function() {
     #   User provided arguments
     fp <- "/Users/chaochih/Projects/Wild_Introgression/Analyses/IBS/Results/pair_for_poster/CIho10420_WBDC172_introgression_sorted_merged_Int.txt"
     pericentromere.fp <- "/Users/chaochih/Dropbox/My_Posters/PEQG_2018/pericentromeres.txt"
+    dom_genes.fp <- "/Users/chaochih/Dropbox/My_Posters/PEQG_2018/domesticated_genes.txt"
     
     #   Read in file
     df <- readData(filename = fp)
     pericent.df <- readPericentromere(filename = pericentromere.fp)
+    dom_genes.df <- readData(filename = dom_genes.fp)
     
     #   Key for pseudomolecular parts positions
     chr1H_part1 <- 312837513
@@ -70,6 +72,7 @@ main <- function() {
     chrom_sizes[["chr"]] <- factor(x = chrom_sizes[["chr"]], levels = chrom_order)
     df[["chr"]] <- factor(x = df[["chr"]], levels = chrom_order)
     pericent.df[["chr"]] <- factor(x = pericent.df[["chr"]], levels = chrom_order)
+    dom_genes.df[["gene_chr"]] <- factor(x = dom_genes.df[["gene_chr"]], levels = chrom_order)
     
     #   Do the plotting
     ggplot(data = chrom_sizes) +
@@ -89,6 +92,8 @@ main <- function() {
         theme(
             axis.text.x = element_text(colour = "black"),
             axis.ticks = element_blank(),
+            axis.line.x = element_line(color="gray10", size = 0.5),
+            axis.line.y = element_line(color="gray10", size = 0.5),
             panel.grid.major = element_blank(),
             panel.grid.minor = element_blank(),
             panel.background = element_blank()
@@ -104,8 +109,8 @@ main <- function() {
                 ymax = end,
                 ymin = start
             ),
-            colour = adjustcolor(col = "gray35", alpha.f = 0.5),
-            fill = adjustcolor(col = "gray35", alpha.f = 0.5)
+            colour = adjustcolor(col = "gray35", alpha.f = 0.25),
+            fill = adjustcolor(col = "gray35", alpha.f = 0.25)
         ) +
         # scale_fill_manual(values) = group.colors +
         #   Add bands for introgressed regions
@@ -119,6 +124,18 @@ main <- function() {
             ),
             colour = adjustcolor(col = "skyblue", alpha.f = 0.6),
             fill = adjustcolor(col = "skyblue", alpha.f = 0.6)
+        ) +
+        #   Add bands for domesticated genes
+        geom_rect(
+            data = dom_genes.df,
+            aes(
+                xmin = as.numeric(gene_chr) - 0.2,
+                xmax = as.numeric(gene_chr) + 0.2,
+                ymax = as.numeric(gene_end),
+                ymin = gene_start
+            ),
+            colour = adjustcolor(col = "orange", alpha.f = 0.9),
+            fill = adjustcolor(col = "orange", alpha.f = 0.9)
         ) +
         ggtitle(paste0(unique(df$Ind1), " and ", unique(df$Ind2), " Introgressed Regions")) +
         #   Suppress Scientific notation on y-axis
