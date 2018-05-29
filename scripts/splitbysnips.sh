@@ -1,7 +1,7 @@
 #!/bin/env bash
 #Connor Depies
 #10/30/2017
-#Program to split a vcf file into 25 snp intervals and analyze their IBD with plink
+#Program to split a vcf file into 100 snp intervals sliding by 25 snps and analyze their IBD with plink
 #1) sorted VCF file
 # Read the file in parameter and fill the array named "array"
 # from https://stackoverflow.com/questions/20294918/extract-file-contents-into-array-using-bash
@@ -39,9 +39,9 @@ do
     # Create an array containing SNP names from each Chromosome
     getArray /panfs/roc/groups/9/morrellp/depie014/introgression/SNPlistsfor318wild/$i
     # Find IBD of each Chromosome
-    # Makes a frqx file which contains allele frequencies. We then use this in the --genome command to correct for the fact that our samples are not in HArdy-Weinberg equilibrium.
-    plink --vcf $1 --allow-extra-chr -freqx --allow-extra-chr --out /panfs/roc/groups/9/morrellp/depie014/introgression/IBD2/fullgenomefile/${i}_out
-    plink --vcf $1 --extract ${i} --genome --geno .15 --read-freq /panfs/roc/groups/9/morrellp/depie014/introgression/IBD2/fullgenomefile/${i}_out.frqx --out /panfs/roc/groups/9/morrellp/depie014/introgression/IBD2/fullgenomefile/${i}_out  --allow-extra-chr;
+    # Makes a frqx file which contains allele frequencies. We then use this in the --genome command to correct for the fact that our samples are not in Hardy-Weinberg equilibrium.
+    plink --vcf $1 --allow-extra-chr --extract /panfs/roc/groups/9/morrellp/depie014/introgression/SNPlistsfor318wild/${i} --freqx --out /panfs/roc/groups/9/morrellp/depie014/introgression/IBD2/fullgenomefile/${i}_out
+    plink --vcf $1 --extract /panfs/roc/groups/9/morrellp/depie014/introgression/SNPlistsfor318wild/${i} --genome --geno .15 --read-freq /panfs/roc/groups/9/morrellp/depie014/introgression/IBD2/fullgenomefile/${i}_out.frqx --out /panfs/roc/groups/9/morrellp/depie014/introgression/IBD2/fullgenomefile/${i}_out  --allow-extra-chr;
     # Find length of the array
     len=${#array[@]}
     # Create sliding windows each containing 100 SNPS from a chromosome, and moving by 25 SNPs each iteration

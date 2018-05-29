@@ -3,7 +3,7 @@
 #08/03/2018
 # Fixes flip and force errors so that two vcf files which have already been sorted and filtered so that they have the same SNPs 
 # will also have the same major and minor allele assignments and no missing values.
-# Takes two vcf files.
+# Takes two sorted vcf files.
 # Takes two strings for names of of output files
 # Takes one more string for directory in which to place intermediate files
 # Takes the number of lines of each of the two headers
