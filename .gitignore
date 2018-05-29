@@ -13,3 +13,4 @@
 
 #   Ignore PyCharm specific files
 *.idea
+*venv*
