@@ -143,3 +143,5 @@ main <- function() {
         #scale_y_continuous(labels = comma) +
         ylab("Physical Position (Mb)")
 }
+
+main()
