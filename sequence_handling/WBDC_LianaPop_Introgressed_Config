@@ -6,13 +6,12 @@
 
 #   Where are we storing the output files?
 #       Final directory is ${OUT_DIR}/Name_of_Handler
-OUT_DIR=/home/morrellp/liux1299/Shared/Projects/Introgressed/sequence_handling/LianaPop_introgressed
-
+OUT_DIR=/panfs/roc/groups/9/morrellp/shared/Datasets/Alignments/WBDC_LianaPop
 #   Name this project
-PROJECT=LianaPop_introgressed
+PROJECT=WBDC_LianaPop
 
 #   What email should we use for job notifications?
-EMAIL=liux1299@umn.edu
+EMAIL=shaw0170@umn.edu
 
 #   What encoding is used for quality values?
 #       Look at the FastQC files to determine
@@ -90,15 +89,15 @@ AT_QSUB="mem=22gb,nodes=1:ppn=16,walltime=10:00:00"
 
 #   Where is the list of original FastQ files?
 #       Include the full file path.
-RAW_SAMPLES=/home/morrellp/liux1299/Shared/Projects/Introgressed/sequence_handling/LianaPop_introgressed/raw_introgressed_2_samples.txt
+RAW_SAMPLES=/home/morrellp/shaw0170/Shared/Datasets/NGS/Barley_Exome/WB_NAM/raw_cat_renamed/all_liana_pop_raw_samples_list.txt
 
 #   What shared suffix do the forward samples have?
 #       Example: _1_sequence.txt.gz
-FORWARD_NAMING=_R1_raw.fastq.gz
+FORWARD_NAMING=_R1.fastq.gz
 
 #   What shared suffix do the reverse samples have?
 #       Example: _2_sequence.txt.gz
-REVERSE_NAMING=_R2_raw.fastq.gz
+REVERSE_NAMING=_R2.fastq.gz
 
 #   If you have single-end samples, leave
 #       FORWARD_NAMING and REVERSE_NAMING
