@@ -85,7 +85,7 @@ TARGET=
 
 #   What are our QSub settings for Adapter_Trimming?
 #       Below are the recommended settings
-AT_QSUB="mem=22gb,nodes=1:ppn=16,walltime=10:00:00"
+AT_QSUB="mem=22gb,nodes=1:ppn=16,walltime=6:00:00"
 
 #   Where is the list of original FastQ files?
 #       Include the full file path.
