@@ -270,8 +270,7 @@ SP_QSUB="mem=22gb,nodes=1:ppn=16,walltime=24:00:00"
 #   Where is the list of read-mapped samples?
 #       To generate this list, use sample_list_generator.sh
 #       located at /sequence_handling/HelperScripts/sample_list_generator.sh
-MAPPED_LIST=/home/morrellp/liux1299/Shared/Projects/Introgressed/sequence_handling/LianaPop_introgressed/Read_Mapping/mapped_list.txt
-
+MAPPED_LIST=/panfs/roc/groups/9/morrellp/shared/Datasets/Alignments/WBDC_LianaPop/Read_Mapping/WBDC_LiPop_RMapping.txt
 #   The next two variables are only used if processing with Picard
 #   If using SAMtools, leave these variables blank
 
