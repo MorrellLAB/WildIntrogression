@@ -6,12 +6,16 @@
 
 #   Where are we storing the output files?
 #       Final directory is ${OUT_DIR}/Name_of_Handler
-OUT_DIR=/panfs/roc/groups/9/morrellp/shared/Datasets/Alignments/WBDC_LianaPop
+#OUT_DIR=/panfs/roc/groups/9/morrellp/shared/Datasets/Alignments/WBDC_LianaPop
+#   Path to scratch directory to output temporary intermediate files
+#   Only uncomment for Read Mapping when generating SAM files
+OUT_DIR=/home/morrellp/liux1299/scratch/seq_handling_intermediates
+
 #   Name this project
 PROJECT=WBDC_LianaPop
 
 #   What email should we use for job notifications?
-EMAIL=shaw0170@umn.edu
+EMAIL=liux1299@umn.edu
 
 #   What encoding is used for quality values?
 #       Look at the FastQC files to determine
@@ -30,11 +34,16 @@ SEQ_PLATFORM=ILLUMINA
 
 #   What reference genome are we using?
 #       Include the full file path.
-REF_GEN=/home/morrellp/liux1299/Shared/References/Reference_Sequences/Barley/Morex/barley_RefSeq_v1.0/barley_pseudomolecules_parts.fa
+REF_GEN=/panfs/roc/groups/9/morrellp/shared/References/Reference_Sequences/Barley/Morex/barley_RefSeq_v1.0/barley_pseudomolecules_parts.fa
 
 #   Is this organism barley?
 #       Choose from: "true" or "false"
 BARLEY=true
+
+#   Do the quality scores need to be adjusted for GATK? Default: false
+#       Change to true if you get errors from GATK like:
+#       "<Sample> appears to be using the wrong encoding for quality scores: we encountered an extremely high quality score"
+FIX_QUALITY_SCORES=false
 
 ############################################
 ##########     GBS_Demultiplex    ##########
@@ -68,11 +77,11 @@ FILE_TYPE=
 
 #   What are our QSub settings for Quality_Assessment?
 #       Below are the recommended settings
-QA_QSUB="mem=22gb,nodes=1:ppn=16,walltime=6:00:00"
+QA_QSUB="mem=22gb,nodes=1:ppn=22,walltime=24:00:00"
 
 #   Provide a list of FastQ, SAM, or BAM files to be used
 #       Include the full file path.
-QA_SAMPLES=/home/morrellp/liux1299/Shared/Projects/Introgressed/sequence_handling/LianaPop_introgressed/raw_introgressed_2_samples.txt
+QA_SAMPLES=
 
 #   What is the size of the genome (for whole-genome sequencing)
 #   or capture region (for exome capture)?
@@ -85,11 +94,11 @@ TARGET=
 
 #   What are our QSub settings for Adapter_Trimming?
 #       Below are the recommended settings
-AT_QSUB="mem=22gb,nodes=1:ppn=16,walltime=6:00:00"
+AT_QSUB="mem=22gb,nodes=1:ppn=22,walltime=24:00:00"
 
 #   Where is the list of original FastQ files?
 #       Include the full file path.
-RAW_SAMPLES=/home/morrellp/shaw0170/Shared/Datasets/NGS/Barley_Exome/WB_NAM/raw_cat_renamed/all_liana_pop_raw_samples_list.txt
+RAW_SAMPLES=/panfs/roc/groups/9/morrellp/shared/Datasets/NGS/Barley_Exome/WB_NAM/raw_cat_renamed/all_liana_pop_raw_samples_list.txt
 
 #   What shared suffix do the forward samples have?
 #       Example: _1_sequence.txt.gz
@@ -105,7 +114,7 @@ REVERSE_NAMING=_R2.fastq.gz
 #       match your samples
 
 #	What is our adapter file? Include the full file path.
-ADAPTERS=/home/morrellp/liux1299/Shared/References/Adapters/illumina_adapters.fa
+ADAPTERS=/panfs/roc/groups/9/morrellp/shared/References/Adapters/adapter_from_Shichen_Wang.fa
 
 #   What is Scythe's prior contamination rate?
 #       Scythe's documentation suggests starting at
@@ -158,7 +167,7 @@ QT_THRESHOLD=
 #   What are our QSub settings for Read_Mapping?
 #       Below are the recommended settings
 #       For large files, it may be necessary to use mesabi
-RM_QSUB="mem=22gb,nodes=1:ppn=16,walltime=24:00:00"
+RM_QSUB="mem=48gb,nodes=1:ppn=20,walltime=12:00:00"
 
 #   Where is our list of trimmed samples?
 #       If you're using the list from Adapter_Trimming
@@ -166,7 +175,8 @@ RM_QSUB="mem=22gb,nodes=1:ppn=16,walltime=24:00:00"
 #       If you're using the list from Quality_Trimming
 #       TRIMMED_LIST=${OUT_DIR}/Quality_Trimming/${PROJECT}_trimmed_quality.txt
 #       Include the full file path.
-TRIMMED_LIST=/panfs/roc/groups/9/morrellp/shared/Datasets/Alignments/WBDC_LianaPop/Adapter_Trimming/WBDC_LianaPop_trimmed_adapters.txt
+#TRIMMED_LIST=/panfs/roc/groups/9/morrellp/shared/Datasets/Alignments/WBDC_LianaPop/Adapter_Trimming/WBDC_LianaPop_trimmed_adapters.txt
+TRIMMED_LIST=/home/morrellp/liux1299/Shared/Datasets/Alignments/WBDC_LianaPop/Adapter_Trimming/WBDC_LianaPop_trimmed_adapters_re-run.txt
 
 #   How are trimmed forward samples named?
 #       If using the Adapter_Trimming handler
@@ -192,7 +202,7 @@ SINGLES_TRIMMED=_Single_ScytheTrimmed.fastq.gz
 #   BWA mem parameters; below are the defaults for BWA mem
 #       Note that you may need to adjust parameters based on species
 #       How many threads are we using?
-THREADS=8
+THREADS=20
 
 #       What is our minimum seed length?
 SEED=8
@@ -261,7 +271,7 @@ VERBOSITY='all'
 #   Specify how you would like your SAM files to be processed
 #       Choose from:
 #           'picard' (recommended) or 'samtools'
-METHOD=samtools
+METHOD=picard
 
 #   What are our QSub settings for SAM_Processing?
 #       Below are the recommended settings
@@ -270,7 +280,8 @@ SP_QSUB="mem=22gb,nodes=1:ppn=16,walltime=24:00:00"
 #   Where is the list of read-mapped samples?
 #       To generate this list, use sample_list_generator.sh
 #       located at /sequence_handling/HelperScripts/sample_list_generator.sh
-MAPPED_LIST=/panfs/roc/groups/9/morrellp/shared/Datasets/Alignments/WBDC_LianaPop/Read_Mapping/WBDC_LiPop_RMapping.txt
+MAPPED_LIST=
+
 #   The next two variables are only used if processing with Picard
 #   If using SAMtools, leave these variables blank
 
@@ -284,7 +295,7 @@ MAX_FILES=1000
 #       If you've encountered issues with running out of temp space
 #           with picard, you can optionally specify a temp directory
 #       Otherwise, leave blank
-TMP=
+TMP=/home/morrellp/liux1299/scratch
 
 ############################################
 ##########    Coverage_Mapping    ##########
@@ -315,7 +326,7 @@ RTC_QSUB="mem=22gb,nodes=1:ppn=16,walltime=24:00:00"
 #   Where is the list of finished BAM files?
 #       To generate this list, use sample_list_generator.sh
 #       located at /sequence_handling/HelperScripts/sample_list_generator.sh
-RTC_BAM_LIST=/home/morrellp/liux1299/Shared/Projects/Introgressed/sequence_handling/LianaPop_introgressed/SAM_Processing/SAMtools/finished_bam_list.txt
+RTC_BAM_LIST=
 
 ############################################
 #########     Indel_Realigner      #########
@@ -328,12 +339,12 @@ IR_QSUB="mem=22gb,nodes=1:ppn=16,walltime=24:00:00"
 #   Where is the list of finished BAM files?
 #       To generate this list, use sample_list_generator.sh
 #       located at /sequence_handling/HelperScripts/sample_list_generator.sh
-IR_BAM_LIST=/home/morrellp/liux1299/Shared/Projects/Introgressed/sequence_handling/LianaPop_introgressed/SAM_Processing/SAMtools/finished_bam_list.txt
+IR_BAM_LIST=
 
 #   Where is the list of realigner targets files (.intervals)?
 #       To generate this list, use sample_list_generator.sh
 #       located at /sequence_handling/HelperScripts/sample_list_generator.sh
-IR_TARGETS=/home/morrellp/liux1299/Shared/Projects/Introgressed/sequence_handling/LianaPop_introgressed/Realigner_Target_Creator/rtc_list.txt
+IR_TARGETS=
 
 #   IR_BAM_LIST and IR_TARGETS must have the same sample order.
 
@@ -359,17 +370,21 @@ HC_QUEUE="ram256g"
 #   Where is the list of finished BAM files?
 #       To generate this list, use sample_list_generator.sh
 #       located at /sequence_handling/HelperScripts/sample_list_generator.sh
-FINISHED_BAM_LIST=/home/morrellp/liux1299/Shared/Projects/Introgressed/sequence_handling/LianaPop_introgressed/Indel_Realigner/realigned_list.txt
+FINISHED_BAM_LIST=
 
 #   What is the nucleotide diversity per base pair (Watterson's theta)?
 #       For barley: 0.008
 #       For soybean: 0.001
-THETA=0.008
+THETA=
 
-#   Do the quality scores need to be adjusted? Default: false
-#       Change to true only if you get errors from GATK like:
-#       "<Sample> appears to be using the wrong encoding for quality scores: we encountered an extremely high quality score"
-FIX_QUALITY_SCORES=false
+#   If true, GATK will not trim down the active region from the full region
+#       (active + extension) to just the active interval for genotyping
+#       Recommended value: false
+DO_NOT_TRIM_ACTIVE_REGIONS=false
+
+#   If true, all bases will be considered active regions
+#       Recommended value: false
+FORCE_ACTIVE=false
 
 ############################################
 ##########     Genotype_GVCFs     ##########
@@ -394,10 +409,15 @@ GVCF_LIST=
 #       Include the full file path.
 REF_DICT=
 
-#   How many chromosomes or chromosome parts does the reference have? (integer value)
+#   How many chromosomes or chromosome parts does the reference have, excluding scaffolds? (integer value)
 #       For barley: 15 (7*2 chromosome parts + chrUn)
-#       For soybean: 20 (this excludes scaffolds)
+#       For soybean: 20
 NUM_CHR=
+
+#   Optional: Leave blank if you do not wish to call SNPs on non-chromosomal sequence
+#       Include the full file path to a list of the names of any and all scaffolds or parts of the reference not covered by the chromosomes above
+#       One scaffold name per line, must end in .intervals, SAMtools style intervals are also acceptable, one per line (ex: chr1:100-200)
+CUSTOM_INTERVALS=
 
 #   What is the sample ploidy? (integer value)
 #   For highly inbred samples (most barleys): 1
@@ -421,26 +441,26 @@ CHS_VCF_LIST=
 #   If not exome capture, put "NA"
 CAPTURE_REGIONS=
 
-#   What is the depth per sample (DP) cutoff?
+#   What is the depth per sample (DP) cutoff? (integer)
 #       If a sample's DP is below this threshold, it will count as a "bad" sample for that site.
 #       Recommended value: 5
 CHS_DP_PER_SAMPLE_CUTOFF=5
 
-#   What is the genotyping quality (GQ) cutoff?
+#   What is the genotyping quality (GQ) cutoff? (integer)
 #       If a sample's GQ is below this threshold, it will count as a "bad" sample for that site.
 #       Recommended value: 10th percentile of the raw GQ percentile table
 CHS_GQ_CUTOFF=
 
-#   What is the maximum number of "bad" (low GQ, low DP, or missing genotype data) samples allowed at a site?
+#   What is the maximum number of "bad" (low GQ, low DP, or missing genotype data) samples allowed at a site? (integer)
 #       Sites with more "bad" samples than this threshold will be filtered out.
 #       Recommended value: total number of samples * 0.2 (rounded to the nearest whole number)
 CHS_MAX_BAD=
 
-#   What is the maximum number of samples at a site that can be heterozygous?
+#   What is the maximum number of samples at a site that can be heterozygous? (integer)
 #       Recommended value: total number of samples * 0.9 (rounded to the nearest whole number)
 CHS_MAX_HET=
 
-#   What is the QUAL score cutoff?
+#   What is the QUAL score cutoff? (integer)
 #       Sites with a QUAL below this cutoff will be excluded.
 #       Recommended value: 40
 CHS_QUAL_CUTOFF=40
@@ -506,39 +526,39 @@ VF_VCF=${OUT_DIR}/Variant_Recalibrator/${PROJECT}_recalibrated.vcf
 #   If not exome capture, put "NA"
 VF_CAPTURE_REGIONS=
 
-#   What is the minimum number of reads needed to support a genotype?
+#   What is the minimum number of reads needed to support a genotype? (integer)
 #       Recommended value: 5
 MIN_DP=5
 
-#   What is the maximum number of reads allowed to support a genotype? (too many = gene duplication problems)
+#   What is the maximum number of reads allowed to support a genotype? (too many = gene duplication problems) (integer)
 #       Recommended value: 95th percentile of the raw DP per sample percentile table
 MAX_DP=
 
-#   What is the maximum percent deviation from 50/50 reference/alternative reads allowed in heterozygotes?
-#       For example, MAX_DEV=0.1 allows 60/40 ref/alt and also 40/60 ref/alt but not 70/30 or 30/70 ref/alt reads
+#   What is the maximum percent deviation from 50/50 reference/alternative reads allowed in heterozygotes? (decimal)
+#       For example, MAX_DEV=0.1 allows 60/40 ref/alt and also 40/60 ref/alt but not anything more skewed
 #       Recommended value: 0.1
 MAX_DEV=0.1
 
-#   What is the depth per sample (DP) cutoff?
+#   What is the depth per sample (DP) cutoff? (integer)
 #       If a sample's DP is below this threshold, it will count as a "bad" sample for that site.
 #       Recommended value: 5
 DP_PER_SAMPLE_CUTOFF=5
 
-#   What is the genotyping quality (GQ) cutoff?
+#   What is the genotyping quality (GQ) cutoff? (integer)
 #       If a sample's GQ is below this threshold, it will count as a "bad" sample for that site.
 #       Recommended value: 10th percentile of the raw GQ percentile table
 GQ_CUTOFF=
 
-#   What is the maximum number of "bad" (low GQ, low DP, or missing genotype data) samples allowed at a site?
+#   What is the maximum number of "bad" (low GQ, low DP, or missing genotype data) samples allowed at a site? (integer)
 #       Sites with more "bad" samples than this threshold will be filtered out.
 #       Recommended value: total number of samples * 0.2 (rounded to the nearest whole number)
 MAX_BAD=
 
-#   What is the maximum number of samples at a site that can be heterozygous?
+#   What is the maximum number of samples at a site that can be heterozygous? (integer)
 #       Recommended value: total number of samples * 0.9 (rounded to the nearest whole number)
 MAX_HET=
 
-#   What is the QUAL score cutoff?
+#   What is the QUAL score cutoff? (integer)
 #       Sites with a QUAL below this cutoff will be excluded.
 #       Recommended value: 40
 QUAL_CUTOFF=40
@@ -590,6 +610,11 @@ module load fastqc/0.11.5
 #FASTQC=
 #export PATH=${FASTQC}:${PATH}
 
+#   Do we have Riss-util installed?
+module load riss_util/1.0
+#RISS_UTIL=
+#export PATH=${RISS_UTIL}:${PATH}
+
 #   Do we have Seqqs installed?
 module load seqqs_ML/3d05375
 #SEQQS=
@@ -629,7 +654,7 @@ module load bedtools/2.17.0
 #export PATH=${BEDTOOLS}:${PATH}
 
 #   Do we have Java installed?
-module load java/openjdk-8_202
+module load java/jdk1.8.0_45
 #JAVA=
 #export PATH=${JAVA}:${PATH}
 
@@ -647,7 +672,7 @@ module load vcflib_ML/1.0.0
 #export PATH=${VCFLIB}:${PATH}
 
 #   Do we have python 3 installed?
-module load python3_ML/3.7.1_anaconda
+module load python3_ML/3.6.1
 #PYTHON3=
 #export PATH=${PYTHON3}:${PATH}
 
@@ -662,7 +687,7 @@ module load bcftools/0.2.0
 #export PATH=${BCFTOOLS}:${PATH}
 
 #   Do we have python-epd installed?
-#module load python-epd/1.5.2 
+#module load python-epd/1.5.2
 #PYTHON-EPD=
 #export PATH=${PYTHON-EPD}:${PATH}
 module load python3_ML/2.7.13
