@@ -6,10 +6,10 @@
 
 #   Where are we storing the output files?
 #       Final directory is ${OUT_DIR}/Name_of_Handler
-#OUT_DIR=/panfs/roc/groups/9/morrellp/shared/Datasets/Alignments/WBDC_LianaPop
+OUT_DIR=/panfs/roc/groups/9/morrellp/shared/Datasets/Alignments/WBDC_LianaPop
 #   Path to scratch directory to output temporary intermediate files
 #   Only uncomment for Read Mapping when generating SAM files
-OUT_DIR=/home/morrellp/liux1299/scratch/seq_handling_intermediates
+#OUT_DIR=/home/morrellp/liux1299/scratch/seq_handling_intermediates
 
 #   Name this project
 PROJECT=WBDC_LianaPop
@@ -77,16 +77,16 @@ FILE_TYPE=
 
 #   What are our QSub settings for Quality_Assessment?
 #       Below are the recommended settings
-QA_QSUB="mem=22gb,nodes=1:ppn=22,walltime=24:00:00"
+QA_QSUB="mem=22gb,nodes=1:ppn=22,walltime=10:00:00"
 
 #   Provide a list of FastQ, SAM, or BAM files to be used
 #       Include the full file path.
-QA_SAMPLES=
+QA_SAMPLES=/home/morrellp/liux1299/Shared/Datasets/Alignments/WBDC_LianaPop/Adapter_Trimming/WBDC_LianaPop_trimmed_adapters.txt
 
 #   What is the size of the genome (for whole-genome sequencing)
 #   or capture region (for exome capture)?
 #   If unavailable, put "NA"
-TARGET=
+TARGET="NA"
 
 ############################################
 ##########    Adapter_Trimming    ##########
@@ -280,7 +280,7 @@ SP_QSUB="mem=22gb,nodes=1:ppn=16,walltime=24:00:00"
 #   Where is the list of read-mapped samples?
 #       To generate this list, use sample_list_generator.sh
 #       located at /sequence_handling/HelperScripts/sample_list_generator.sh
-MAPPED_LIST=
+MAPPED_LIST=/home/morrellp/liux1299/Shared/Datasets/Alignments/WBDC_LianaPop/Read_Mapping/WBDC_LianaPop_sam_list.txt
 
 #   The next two variables are only used if processing with Picard
 #   If using SAMtools, leave these variables blank
