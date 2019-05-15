@@ -308,12 +308,12 @@ CM_QSUB="mem=22gb,nodes=1:ppn=16,walltime=24:00:00"
 #   Where is the list of finished BAM files?
 #       To generate this list, use sample_list_generator.sh
 #       located at /sequence_handling/HelperScripts/sample_list_generator.sh
-BAM_LIST=
+BAM_LIST=/home/morrellp/liux1299/Shared/Datasets/Alignments/WBDC_LianaPop/SAM_Processing/Picard/LianaPop_finished_bam_list.txt
 
 #   For exome capture, use the capture regions file (BED format)
 #   For whole-genome sequencing, leave this blank
 #   Coverage_Mapping should not be used for GBS data
-REGIONS_FILE=
+REGIONS_FILE=/panfs/roc/groups/9/morrellp/shared/References/Reference_Sequences/Barley/Morex/captured_50x_partsRef.bed
 
 ############################################
 ########  Realigner_Target_Creator  ########
@@ -370,12 +370,12 @@ HC_QUEUE="ram256g"
 #   Where is the list of finished BAM files?
 #       To generate this list, use sample_list_generator.sh
 #       located at /sequence_handling/HelperScripts/sample_list_generator.sh
-FINISHED_BAM_LIST=
+FINISHED_BAM_LIST=/home/morrellp/liux1299/Shared/Datasets/Alignments/WBDC_LianaPop/SAM_Processing/Picard/LianaPop_finished_bam_list.txt
 
 #   What is the nucleotide diversity per base pair (Watterson's theta)?
 #       For barley: 0.008
 #       For soybean: 0.001
-THETA=
+THETA=0.008
 
 #   If true, GATK will not trim down the active region from the full region
 #       (active + extension) to just the active interval for genotyping
