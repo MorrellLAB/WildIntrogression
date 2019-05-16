@@ -400,19 +400,19 @@ GG_QSUB="mem=22gb,nodes=1:ppn=16,walltime=24:00:00"
 #   Where is the list of GVCF files?
 #       To generate this list, use sample_list_generator.sh
 #       located at /sequence_handling/HelperScripts/sample_list_generator.sh
-GVCF_LIST=
+GVCF_LIST=/home/morrellp/liux1299/Shared/Datasets/Alignments/WBDC_LianaPop/Haplotype_Caller/wbdc_liana_pop_gvcf_list.txt
 
 #   What is the nucleotide diversity per base pair (Watterson's theta)?
 #   Genotype_GVCFs uses the THETA under Haplotype_Caller for this
 
 #   Where is the reference dictionary file? (.dict)
 #       Include the full file path.
-REF_DICT=
+REF_DICT=/panfs/roc/groups/9/morrellp/shared/References/Reference_Sequences/Barley/Morex/barley_RefSeq_v1.0/barley_pseudomolecules_parts.dict
 
 #   How many chromosomes or chromosome parts does the reference have, excluding scaffolds? (integer value)
 #       For barley: 15 (7*2 chromosome parts + chrUn)
 #       For soybean: 20
-NUM_CHR=
+NUM_CHR=15
 
 #   Optional: Leave blank if you do not wish to call SNPs on non-chromosomal sequence
 #       Include the full file path to a list of the names of any and all scaffolds or parts of the reference not covered by the chromosomes above
@@ -421,7 +421,7 @@ CUSTOM_INTERVALS=
 
 #   What is the sample ploidy? (integer value)
 #   For highly inbred samples (most barleys): 1
-PLOIDY=
+PLOIDY=1
 
 ############################################
 ##########    Create_HC_Subset    ##########
