@@ -81,12 +81,13 @@ QA_QSUB="mem=22gb,nodes=1:ppn=22,walltime=10:00:00"
 
 #   Provide a list of FastQ, SAM, or BAM files to be used
 #       Include the full file path.
-QA_SAMPLES=/home/morrellp/liux1299/Shared/Datasets/Alignments/WBDC_LianaPop/Adapter_Trimming/WBDC_LianaPop_trimmed_adapters.txt
+#QA_SAMPLES=/home/morrellp/liux1299/Shared/Datasets/Alignments/WBDC_LianaPop/Adapter_Trimming/WBDC_LianaPop_trimmed_adapters.txt
+QA_SAMPLES=/home/morrellp/liux1299/Shared/Datasets/Alignments/WBDC_LianaPop/SAM_Processing/Picard/LianaPop_finished_bam_list.txt
 
 #   What is the size of the genome (for whole-genome sequencing)
 #   or capture region (for exome capture)?
 #   If unavailable, put "NA"
-TARGET="NA"
+TARGET=80000000
 
 ############################################
 ##########    Adapter_Trimming    ##########
