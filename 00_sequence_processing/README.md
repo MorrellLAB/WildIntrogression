@@ -66,3 +66,22 @@ grep -v "#" missing_snps_list_domesticated_filtered_morex_v3_unsorted.vcf | wc -
 grep -v "#" missing_snps_list_wbdc_318_BOPA_morex_v3_unsorted.vcf | wc -l
     75
 ```
+
+### Merging VCF files
+
+```bash
+# In dir: ~/Projects/Introgressed/vcf/morex_v3
+# Dependencies
+module load htslib/1.9
+module load bcftools/1.10.2
+# bcftools requires bgzipped vcf files for merge
+bgzip -c domesticated_filtered_morex_v3.vcf > domesticated_filtered_morex_v3.vcf.gz
+tabix -p vcf --csi domesticated_filtered_morex_v3.vcf.gz
+bgzip -c wbdc_318_BOPA_morex_v3.vcf > wbdc_318_BOPA_morex_v3.vcf.gz
+tabix -p vcf --csi wbdc_318_BOPA_morex_v3.vcf.gz
+
+# Merge VCF files
+bcftools merge -m id -O v -o merged_domesticated_and_wbdc_318_morex_v3.vcf domesticated_filtered_morex_v3.vcf.gz wbdc_318_BOPA_morex_v3.vcf.gz
+```
+
+Merged VCF: `/panfs/roc/groups/9/morrellp/shared/Projects/Introgressed/vcf/morex_v3/merged_domesticated_and_wbdc_318_morex_v3.vcf`
