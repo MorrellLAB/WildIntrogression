@@ -18,9 +18,6 @@ if len(sys.argv) < 2:
     print(__doc__)
     sys.exit(0)
 
-vcf_file = "/Users/chaochih/Downloads/toy_wbdc_bopa.vcf"
-new_snp_pos_vcf = "~/GitHub/morex_reference/morex_v3/50k_9k_BOPA_SNP/bopa_idt95_noRescuedSNPs.vcf"
-
 
 def read_vcf(vcf):
     """Read VCF file and store in a dictionary."""
