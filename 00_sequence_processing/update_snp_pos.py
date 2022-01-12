@@ -44,9 +44,13 @@ def update_pos(vcf, new_pos_vcf):
             # New chromosome and positions
             new_chrom = new_pos_vcf[key][0]
             new_pos = new_pos_vcf[key][1]
+            new_ref = new_pos_vcf[key][3]
+            new_alt = new_pos_vcf[key][4]
             tmp_line = vcf[key]
             tmp_line[0] = new_chrom
             tmp_line[1] = new_pos
+            tmp_line[3] = new_ref
+            tmp_line[4] = new_alt
             updated_dict[key] = tmp_line
         else:
             # Key doesn't exist in new pos lookup vcf
