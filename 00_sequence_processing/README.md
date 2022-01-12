@@ -82,6 +82,9 @@ tabix -p vcf --csi wbdc_318_BOPA_morex_v3.vcf.gz
 
 # Merge VCF files
 bcftools merge -m id -O v -o merged_domesticated_and_wbdc_318_morex_v3.vcf domesticated_filtered_morex_v3.vcf.gz wbdc_318_BOPA_morex_v3.vcf.gz
+# Bgzip and index
+bgzip -c merged_domesticated_and_wbdc_318_morex_v3.vcf > merged_domesticated_and_wbdc_318_morex_v3.vcf.gz
+tabix -p vcf --csi merged_domesticated_and_wbdc_318_morex_v3.vcf.gz
 ```
 
 Merged VCF: `/panfs/roc/groups/9/morrellp/shared/Projects/Introgressed/vcf/morex_v3/merged_domesticated_and_wbdc_318_morex_v3.vcf`
