@@ -8,6 +8,7 @@ Load dependencies for BAD_Mutations. Run the lines below before calling on the `
 
 ```bash
 module load python3/3.6.3_anaconda5.0.1
+source activate /panfs/roc/groups/9/morrellp/liux1299/.conda/envs/bad_mutations
 export PATH=${PATH}:/panfs/roc/groups/9/morrellp/liux1299/Software/BAD_Mutations
 ```
 
