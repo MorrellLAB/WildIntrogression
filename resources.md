@@ -17,9 +17,11 @@
 
 ## Resequencing data
 
-- The fully processed exome capture data set is at this path: /panfs/jay/groups/9/morrellp/shared/Projects/WBDC_inversions/vcf_morex_v3/wild_snps_final.vcf.psuedomolecule.vcf.gz
-- This dataset does not include a lot of introgressed individuals, and many individuals were not genotyped with the WBDC
-- The selective sweeps data set has exome capture data from a large collection of variants called in domesticated barley, but against Morex_v2
+The fully processed exome capture data set including the introgressed individuals will be in this directory once filtered:
+
+```bash
+/panfs/jay/groups/9/morrellp/shared/Datasets/Alignments/introgression_project/all_dom_and_wild/Filtered
+```
 
 ## Genetic assignment should be useful to determine which individuals are introgressed
 - [Admixture][9] has a haploid mode that should be useful for comparing WBDC accessions to domesticated samples from the USDA Core Collection.
