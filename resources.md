@@ -10,8 +10,9 @@
 - [Fang et al. 2014][1] report analysis of the [BOPA][2] SNP set in the WBDC collection.
 - The full genotyped dataset is available as raw .tsv with Alchemy genotype calls are in the [DRUM][3]
 - The WBDC has also been genotyped with GBS as reported in [Sallam et al. 2017][4]
-    - The full, filtered and "tagged" dataset is at this path: `/panfs/jay/groups/9/morrellp/shared/Projects/WBDC_inversions/Ahmad_GBS_morex_v3`
-    - The most complete file is `WBDC_GBS_noIntro_307_mafgt0.0016.recode.tags.vcf.gz` but it may be necessary to further filter variants with high heterozygosity or other issues.
+    - The full, filtered dataset is at this path: `/panfs/jay/groups/9/morrellp/shared/Projects/WBDC_inversions/Ahmad_GBS_morex_v3`
+    - The file with 314 individuals is `final_filtered_treatmissing_biallilic_all_chrs_mafgt0.0016.recode.vcf` but it may be necessary to further filter variants with high heterozygosity or other issues.
+        - Additional filtering may be needed to match filtering in the file with only 307 individuals: `WBDC_GBS_noIntro_307_mafgt0.0016.recode.tags.vcf.gz`
 - The iSelect 9K dataset from the USDA Core Collection includes most, but not all the BOPA SNPs. A large set of cultivated and landrace lines were genotyped and reported by [Muñoz-Amatriaín et al. 2014][5]
     - The dataset as reported by [Poets et al. 2015][6] is available on [Figshare][7]. There is a GitHub [repository][8] that may be useful for processing this dataset.
 
@@ -30,7 +31,7 @@ The fully processed exome capture data set including the introgressed individual
 - [Plink][11] identity by state analysis can identify nearly identical regions. This may still require Plink 1.9.
 - [MOSAIC][12] is current tool for chromosome painting. It requires phased data.
 
-## A list of domestication-related genes is available 
+## A list of domestication-related genes is available
 
 - The genes most associated with domestication in barley involve loss of shattering, loss of seed dormancy, and row number. At least one gene has been cloned for each of these phenotypes. We may need to identify Morex_v3 positions.
 - The file is [here][13].
