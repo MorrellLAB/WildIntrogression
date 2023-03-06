@@ -1,3 +1,6 @@
+#   Ignore files in temp subdirectory
+temp
+
 #   Ignore R Libraries
 *.RLibs*
 

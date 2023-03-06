@@ -1,15 +1,18 @@
 #!/bin/bash
 
 set -e
-set -o
+set -o pipefail
 
 #   Dependencies
-module load plink/1.90b4.1
+module load plink/1.90b6.10
 
 #   User provided arguments
-VCF=$1
-MISSING=$2
-OUT_DIR=$3
+VCF="/panfs/roc/groups/9/morrellp/shared/Projects/Introgressed/vcf/morex_v3/merged_domesticated_and_wbdc_318_morex_v3.vcf"
+OUT_DIR="/panfs/roc/groups/9/morrellp/shared/Projects/Introgressed/plink_ibs"
+
+#-----------------
+# Check if out dir exists, if not make it
+mkdir -p ${OUT_DIR}
 
 #   Generated from user provided arguments
 OUT_PREFIX=$(basename ${VCF} .vcf)
