@@ -24,6 +24,13 @@
 
 NSGC Core genotyping data available in figshare: https://figshare.com/articles/dataset/Raw_Genotyping_Data_Barley_landraces_are_characterized_by_geographically_heterogeneous_genomic_origins/1468432
 
+Download raw NSGC genotyping data.
+
+```bash
+# In dir: ~/GitHub/WildIntrogression/00_sequence_processing/genotype_data_processing
+sbatch download_data-NSGC_landrace_and_cultivated.sh
+```
+
 ## Original files relative to Morex_v1
 
 Li Lei generated the following files after some filtering of the BOPA genotype data.
@@ -54,7 +61,15 @@ For Connor, `hetero_missing_318WBDC_forced_flipped_forced_ref_flipped_test_BOPA.
 
 ## Update physical positions to Morex_v3
 
-Previously generated VCF files (relative to an older version of the reference genome) for the genotype data are available in the directory: `/panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/vcf/morex_v1`
+Previously generated VCF files (relative to an older version of the reference genome) for the genotype data are available in the directory: `/panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/vcf/morex_v1`. The relevant files are:
+
+```bash
+# Morex v1 files to update
+/panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/vcf/morex_v1/domesticated_filtered_sorted.vcf
+/panfs/jay/groups/9/morrellp/llei/Inversion/Alchemy_geno_forChaochih/hetero_missing_318WBDC__forced_flipped_forced_ref_flipped_test_BOPA.recode.vcf
+```
+
+Updating Morex_v1 to Morex_v3 positions:
 
 ```bash
 # In dir: ~/Projects/Introgressed/vcf/morex_v1
