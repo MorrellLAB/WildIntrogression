@@ -1,0 +1,2 @@
+wild    1
+wild_introgressed   2

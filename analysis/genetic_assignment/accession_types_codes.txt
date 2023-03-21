@@ -1,0 +1,6 @@
+wild    1
+landrace    2
+cultivar    3
+breeding    3
+genetic    3
+uncertain    4
