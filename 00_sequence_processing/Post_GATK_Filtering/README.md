@@ -33,4 +33,56 @@ Prepare files for filtering evaluation.
 sbatch prep_ann_snps.sh
 # Prepare chr1H VCF for visualization in Jupyter Notebooks
 sbatch scikit_allel_plot_prep.sh
+# Evaluate filtering using MSI's Open On Demand with code in this Jupyter Notebook
+Evaluate_filtering-snps_introgression_project.ipynb
+```
+
+Additional filtering checks.
+
+```bash
+# In dir: ~/GitHub/WildIntrogression/00_sequence_processing/Post_GATK_Filtering
+# Generates bcftools stats, calculate Ts/Tv, and calculates MAF
+sbatch evaluate_vcf_filtering.sh
+sbatch tstv_snps.sh
+sbatch summarize_missingness.sh
+```
+
+Check het/hom_alt ratio for any outliers (generated from bcftools stats output file with some custom calculations in script).
+
+```bash
+# In dir: ~/Alignments/introgression_project/all_dom_and_wild/Filtered/vcf_summary
+(head -n 1 dom_and_wild_snps_biallelic.callable.cap50x.het_hom_ratios.txt && tail -n +2 dom_and_wild_snps_biallelic.callable.cap50x.het_hom_ratios.txt | sort -k4,4nr) | head
+PI_231151	36313	23903	0.658249
+PI_564666	43936	19500	0.443827
+PI_327716	34240	12854	0.375409
+PI_327606	74009	19817	0.267765
+PI_422230	74614	19488	0.261184
+HOR14153	80747	16812	0.208206
+BCC003	78043	12145	0.155619
+WBDC_113	1561	157	0.100577
+WBDC_095	1118	111	0.0992844
+WBDC_115	1870	176	0.0941176
+```
+
+Check individuals with the most missing genotypes.
+
+```bash
+# In dir: ~/Alignments/introgression_project/all_dom_and_wild/Filtered/ann_visualization
+sort -k5,5nr dom_and_wild_snps_biallelic.callable_missingness.imiss | head
+```
+
+Exclude the following individuals with very high proportion missing data (97%-99% missing).
+
+```bash
+WBDC_146
+WBDC_095
+WBDC_113
+WBDC_115
+WBDC_048
+WBDC_122
+```
+
+```bash
+# In dir: ~/GitHub/WildIntrogression/00_sequence_processing/Post_GATK_Filtering
+sbatch exclude_samples.sh
 ```

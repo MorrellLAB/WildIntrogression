@@ -28,7 +28,7 @@ export PATH=${PATH}:"/panfs/jay/groups/9/morrellp/liux1299/GitHub/Barley_Mutated
 # User provided input arguments
 VCF_UNFILT="/scratch.global/liux1299/temp_introgression/dom_and_wild_snps_polymorphic.vcf.gz"
 FILT1_VCF="/panfs/jay/groups/9/morrellp/shared/Datasets/Alignments/introgression_project/all_dom_and_wild/Filtered/dom_and_wild_snps_biallelic.vcf.gz"
-FILT2_VCF="/panfs/jay/groups/9/morrellp/shared/Datasets/Alignments/introgression_project/all_dom_and_wild/Filtered/dom_and_wild_snps_biallelic.callable.vcf.gz"
+FILT2_VCF="/panfs/jay/groups/9/morrellp/shared/Datasets/Alignments/introgression_project/all_dom_and_wild/Filtered/dom_and_wild_snps_biallelic.callable.cap50x.vcf.gz"
 # VCFs of known variants
 VCF_SANGER="/panfs/jay/groups/9/morrellp/pmorrell/Workshop/Selective_Sweeps/Sanger/Morex_v3_processed/17_barley_sanger_loci_Morex_v3_parts.vcf"
 VCF_BOPA="/panfs/jay/groups/9/morrellp/shared/References/Reference_Sequences/Barley/Morex_v3/bopa_9k_50k/bopa_idt95_noRescuedSNPs_partsRef.vcf"
@@ -87,9 +87,9 @@ vcf_to_bcftools_ann_tsv-known.py ${VCF_UNFILT} ${OUT_DIR}/known_x_${VCF_OUT_PREF
 vcf_to_bcftools_ann_tsv-filtered.py ${VCF_UNFILT} ${FILT1_VCF} ${FILT2_VCF} > ${OUT_DIR}/ann_filt-${VCF_OUT_PREFIX}.txt
 
 # bgzip and tabix index before running bcftools annotate
-bgzip ${OUT_DIR}/ann_known-${VCF_OUT_PREFIX}.txt
+bgzip --force ${OUT_DIR}/ann_known-${VCF_OUT_PREFIX}.txt
 tabix -p vcf ${OUT_DIR}/ann_known-${VCF_OUT_PREFIX}.txt.gz
-bgzip ${OUT_DIR}/ann_filt-${VCF_OUT_PREFIX}.txt
+bgzip --force ${OUT_DIR}/ann_filt-${VCF_OUT_PREFIX}.txt
 tabix -p vcf ${OUT_DIR}/ann_filt-${VCF_OUT_PREFIX}.txt.gz
 
 # Prepare .hdr files containing VCF header lines to be added to output vcf

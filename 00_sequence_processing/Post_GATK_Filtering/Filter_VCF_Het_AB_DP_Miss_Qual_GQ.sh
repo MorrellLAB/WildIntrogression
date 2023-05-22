@@ -33,8 +33,8 @@ HET_PROP="0.1"
 # Min and Max DP per sample threshold
 MIN_DP="5"
 MAX_DP="158"
-# Max proportion missing
-MAX_MISS="0.30"
+# Max proportion missing per site
+MAX_MISS="0.20"
 # Quality cutoff
 QUAL_CUTOFF="30"
 # GQ cutoff per sample
@@ -53,6 +53,12 @@ FAKE_POLY="0.0008"
 
 # Uncallable BED file includes: REF has stretches of N's, repeat annotations, and high copy regions
 UNCALLABLE_BED="/panfs/jay/groups/9/morrellp/shared/Projects/Mutant_Barley/uncallable_regions/morex_v3_combined_uncallable.nochrUn.bed"
+
+# Regions covered by exome capture (covered by >=50 reads)
+# See Kono et al. 2019 for methods
+# See Github repo for how this was generated:
+# https://github.com/MorrellLAB/captured_50x_BED/tree/master/morex_v3
+CAP50X_BED="/panfs/jay/groups/9/morrellp/shared/References/Reference_Sequences/Barley/Morex_v3/captured_50x_morex_v3_partsRef_nochrUn.bed"
 
 #-----------------
 # Check the out dir and scratch dir exist, if not make them
@@ -159,3 +165,9 @@ bedtools intersect -wa -v -header -a ${OUT_DIR}/${OUT_PREFIX}_biallelic.vcf.gz -
 tabix -p vcf ${OUT_DIR}/${OUT_PREFIX}_biallelic.callable.vcf.gz
 # Get the number of sites left after filtering and append to file
 count_sites ${OUT_DIR}/${OUT_PREFIX}_biallelic.callable.vcf.gz ${OUT_DIR}/${OUT_PREFIX}_num_sites.log
+
+# Include only sites covered in exome capture
+bedtools intersect -header -wa -a ${OUT_DIR}/${OUT_PREFIX}_biallelic.callable.vcf.gz -b ${CAP50X_BED} | bgzip > ${OUT_DIR}/${OUT_PREFIX}_biallelic.callable.cap50x.vcf.gz
+tabix -p vcf ${OUT_DIR}/${OUT_PREFIX}_biallelic.callable.cap50x.vcf.gz
+# Get the number of sites left after filtering and append to file
+count_sites ${OUT_DIR}/${OUT_PREFIX}_biallelic.callable.cap50x.vcf.gz ${OUT_DIR}/${OUT_PREFIX}_num_sites.log

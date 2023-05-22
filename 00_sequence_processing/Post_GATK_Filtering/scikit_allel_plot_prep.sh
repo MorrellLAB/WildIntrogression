@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=8
-#SBATCH --mem=22gb
-#SBATCH --tmp=12gb
-#SBATCH -t 48:00:00
+#SBATCH --mem=16gb
+#SBATCH --tmp=10gb
+#SBATCH -t 12:00:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=liux1299@umn.edu
 #SBATCH -p small,ram256g,ram1t
@@ -52,12 +52,17 @@ fi
 suffix="${num_name}Mx${gen_len}bp"
 
 # If file doesn't exist, run this step
-if [ ! -f ${work_dir}/${chrom_prefix}_Genome_Random_Intervals_${suffix}.bed ] && [ ! -f ${work_dir}/${chrom_prefix}_Genome_Random_Intervals_${suffix}.vcf ]; then
+if [ ! -f ${work_dir}/${chrom_prefix}_Genome_Random_Intervals_${suffix}.bed ]; then
     # Downsample variants (to speed up computational time)
     # Create .bed file with random genome intervals
     awk -v OFS='\t' {'print $1,$2'} "${ref_fai}" | grep "${chrom_prefix}" > ${work_dir}/${chrom_prefix}_genome_file.txt
     # Create intervals file to subset genome randomly
     bedtools random -l ${gen_len} -n ${gen_num} -seed 65 -g "${work_dir}/${chrom_prefix}_genome_file.txt" | sort -k 1,1 -k2,2n > "${work_dir}/${chrom_prefix}_Genome_Random_Intervals_${suffix}.bed"
+fi
+
+# If file doesn't exist, run this step
+if [ ! -f ${work_dir}/${chrom_prefix}_Genome_Random_Intervals_${suffix}.vcf ]; then
+    # Downsample variants (to speed up computational time)
     # Create VCF from random intervals file
     bedtools intersect -header -wa -a ${vcf_ann} -b ${work_dir}/${chrom_prefix}_Genome_Random_Intervals_${suffix}.bed > ${work_dir}/${chrom_prefix}_Genome_Random_Intervals_${suffix}.vcf
 fi
