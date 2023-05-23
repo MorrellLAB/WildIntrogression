@@ -31,6 +31,13 @@ Download raw NSGC genotyping data.
 sbatch download_data-NSGC_landrace_and_cultivated.sh
 ```
 
+Didn't end up needing to re-download raw data. NSGC 9k genotype data was already processed and filtered. They are located here:
+
+```bash
+/panfs/jay/groups/9/morrellp/shared/Datasets/Genotyping/NSGC_Landraces
+/panfs/jay/groups/9/morrellp/shared/Datasets/Genotyping/NSGC_Landraces/new_vcf_process
+```
+
 ## Original files relative to Morex_v1
 
 Li Lei generated the following files after some filtering of the BOPA genotype data.
@@ -58,6 +65,8 @@ hetero_missing_318WBDC_forced_flipped_forced_ref_flipped_test_BOPA.recode.vcf
 ```
 
 For Connor, `hetero_missing_318WBDC_forced_flipped_forced_ref_flipped_test_BOPA.recode.vcf` is the correct file you can feed plink and set the --geno as "0.15", then plink will filter out all variants with missing call rates exceeding the provided value (0.15) to be removed.
+
+---
 
 ## Update physical positions to Morex_v3
 
@@ -149,3 +158,110 @@ tabix -p vcf --csi merged_domesticated_and_wbdc_318_morex_v3.vcf.gz
 ```
 
 Merged VCF: `/panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/vcf/morex_v3/merged_domesticated_and_wbdc_318_morex_v3.vcf`
+
+## Check that strand orientation is correct relative to Morex v3
+
+See: `tutorial_alchemy2vcf.md`
+
+0 discordant SNPs, proceed with VCF.
+
+## Check some summary metrics
+
+```bash
+# In dir: ~/GitHub/WildIntrogression/00_sequence_processing/genotype_data_processing
+sbatch summarize_missingness.sh
+sbatch check_het.sh
+sbatch tstv_snps.sh
+```
+
+Check het/hom_alt ratio for any outliers (generated from bcftools stats output file with some custom calculations in script).
+
+```bash
+# In dir: ~/Projects/Introgressed/vcf/morex_v3/vcf_summary
+# het/hom ratios
+(head -n 1 merged_domesticated_and_wbdc_318_morex_v3.het_hom_ratios.txt && tail -n +2 merged_domesticated_and_wbdc_318_morex_v3.het_hom_ratios.txt | sort -k4,4nr) | head
+# Observed heterozygosity
+(head -n 1 merged_domesticated_and_wbdc_318_morex_v3.observed_heterozygosity.txt && tail -n +2 merged_domesticated_and_wbdc_318_morex_v3.observed_heterozygosity.txt | sort -k5,5nr) | head
+```
+
+Check missing.
+
+```bash
+# In dir: ~/Projects/Introgressed/vcf/morex_v3/vcf_summary
+sort -k5,5nr merged_domesticated_and_wbdc_318_morex_v3.vcf_missingness.imiss | head
+sort -k6,6nr merged_domesticated_and_wbdc_318_morex_v3.vcf_missingness.lmiss | head
+```
+
+## Filter VCFs
+
+Filter WBDC BOPA and NSGC 9K VCFs before merging (after merging causes some overly stringent filtering for SNPs present in one dataset but not in the other due to different genotyping sets).
+
+```bash
+# In dir: ~/GitHub/WildIntrogression/00_sequence_processing/genotype_data_processing
+./Filter_VCF_wbdc_bopa.sh
+./Filter_VCF_nsgc.sh
+```
+
+Check summary metrics after filtering.
+
+```bash
+# In dir: ~/GitHub/WildIntrogression/00_sequence_processing/genotype_data_processing
+./check_het-wbdc.sh
+./check_het-nsgc.sh
+
+./summarize_missingness-wbdc.sh
+./summarize_missingness-nsgc.sh
+
+./tstv_snps-wbdc.sh
+./tstv_snps-nsgc.sh
+```
+
+Check het/hom_alt ratio for any outliers (generated from bcftools stats output file with some custom calculations in script).
+
+```bash
+# In dir: ~/Projects/Introgressed/vcf/morex_v3/vcf_summary
+# het/hom ratios
+(head -n 1 domesticated_snps.polymorphic.filt_miss_het.het_hom_ratios.txt && tail -n +2 domesticated_snps.polymorphic.filt_miss_het.het_hom_ratios.txt | sort -k4,4nr) | head
+
+(head -n 1 wbdc_bopa_snps.polymorphic.filt_miss_het.het_hom_ratios.txt && tail -n +2 wbdc_bopa_snps.polymorphic.filt_miss_het.het_hom_ratios.txt | sort -k4,4nr) | head
+
+# Observed heterozygosity
+(head -n 1 domesticated_snps.polymorphic.filt_miss_het.observed_heterozygosity.txt && tail -n +2 domesticated_snps.polymorphic.filt_miss_het.observed_heterozygosity.txt | sort -k5,5nr) | head
+
+(head -n 1 wbdc_bopa_snps.polymorphic.filt_miss_het.observed_heterozygosity.txt && tail -n +2 wbdc_bopa_snps.polymorphic.filt_miss_het.observed_heterozygosity.txt | sort -k5,5nr) | head
+```
+
+Check missing.
+
+```bash
+# In dir: ~/Projects/Introgressed/vcf/morex_v3/Filtered/vcf_summary
+sort -k5,5nr domesticated_snps.polymorphic.filt_miss_het_missingness.imiss | head
+
+sort -k6,6nr domesticated_snps.polymorphic.filt_miss_het_missingness.lmiss | head
+
+sort -k5,5nr wbdc_bopa_snps.polymorphic.filt_miss_het_missingness.imiss | head
+
+sort -k6,6nr wbdc_bopa_snps.polymorphic.filt_miss_het_missingness.lmiss | head
+```
+
+## Merge filtered VCF files
+
+```bash
+# In dir: ~/Projects/Introgressed/vcf/morex_v3/Filtered
+# Merge VCF files
+bcftools merge -m id -O z -o nsgc_wbdc_bopa_9k_morex_v3.poly.filt_miss_het.vcf.gz domesticated_snps.polymorphic.filt_miss_het.vcf.gz wbdc_bopa_snps.polymorphic.filt_miss_het.vcf.gz
+# Index
+tabix -p vcf --csi nsgc_wbdc_bopa_9k_morex_v3.poly.filt_miss_het.vcf.gz
+```
+
+Filtered VCF filepaths:
+
+```bash
+# domesticated accessions (landraces and cultivars) only
+/panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/vcf/morex_v3/Filtered/domesticated_snps.polymorphic.filt_miss_het.vcf.gz
+# wild accessions only
+/panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/vcf/morex_v3/Filtered/wbdc_bopa_snps.polymorphic.filt_miss_het.vcf.gz
+
+# domesticated and wild accessions merged into one file
+/panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/vcf/morex_v3/Filtered/nsgc_wbdc_bopa_9k_morex_v3.poly.filt_miss_het.vcf.gz
+```
