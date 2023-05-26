@@ -1,0 +1,13 @@
+WBDC016	wild_introgressed
+WBDC020	wild_introgressed
+WBDC042	wild_introgressed
+WBDC061	wild_introgressed
+WBDC082	wild_introgressed
+WBDC092	wild_introgressed
+WBDC115	wild_introgressed
+WBDC172	wild_introgressed
+WBDC173	wild_introgressed
+WBDC182	wild_introgressed
+WBDC227	wild_introgressed
+WBDC292	wild_introgressed
+WBDC350	wild_introgressed
