@@ -68,6 +68,8 @@ Annotation with Annovar using the script `annotate_variation.pl`.
 sbatch annotate_with_annovar.sh
 ```
 
+Description of nomenclature in column 3 of `.exonic_variant_function`: https://varnomen.hgvs.org/bg-material/simple/
+
 Quick exploration of Annovar output.
 
 ```bash
@@ -79,12 +81,34 @@ stoploss
 synonymous SNV
 unknown
 
-
+liux1299@ln0003:~/Projects/Introgressed/Annovar $ cut -f 1 dom_and_wild_snps_biallelic.callable.cap50x.final_annovar_input.txt.variant_function | sort -uV
+UTR3
+UTR5
+UTR5;UTR3
+downstream
+exonic
+exonic;splicing
+intergenic
+intronic
+splicing
+upstream
+upstream;downstream
 ```
 
 ---
 
 ### Prepare Annovar output for BAD_Mutations
 
+Convert Annovar output file to BAD_Mutations .subs format.
 
+```bash
+sbatch annovar_to_subs.sh
+```
 
+Check total number of .subs files.
+
+```bash
+# In dir: ~/Projects/Introgressed/bad_mutations/annovar_to_subs/dom_and_wild_snps
+ls *.subs | wc -l
+21700
+```
