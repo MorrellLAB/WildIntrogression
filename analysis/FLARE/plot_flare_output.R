@@ -6,8 +6,9 @@ library(dplyr)
 library(gdata)
 library(R.utils)
 library(chromPlot)
+library(ggbeeswarm)
 
-setwd("~/Dropbox/Projects/Wild_Introgression/Analyses/local_ancestry-flare")
+setwd("~/Dropbox/Projects/Wild_Introgression/Analyses/local_ancestry-flare/plots")
 
 flare_out_vcf_fp <- "~/Dropbox/Projects/Wild_Introgression/Analyses/local_ancestry-flare/wild_likely_introgressed_geno.flare.out.anc.vcf.gz"
 centromere_fp <- "~/GitHub/morex_reference/morex_v3/pericentromere/MorexV3_centromere_positions.tsv"
@@ -74,7 +75,19 @@ prop_anc_summary <- df_anc %>%
 # Re-order groups
 unique(prop_anc_summary$ancestry)
 prop_anc_summary$ancestry <- factor(prop_anc_summary$ancestry, levels=c("breeding", "wild", "hom_reference"))
+write_delim(prop_anc_summary, file="wild_introgressed_prop.txt", delim="\t", quote="none", col_names=TRUE)
 
+# Check no introgression individuals
+prop_snps_breeding <- prop_anc_summary[prop_anc_summary$ancestry == "breeding", ] %>%
+  arrange(anc_prop)
+# Identify individuals with <1%
+lt1percent <- prop_snps_breeding[prop_snps_breeding$anc_prop < 0.01, ] %>% arrange(sample)
+write_delim(lt1percent, file="wild_introgressed_prop.lt1percent.txt", delim="\t", quote="none", col_names=TRUE)
+# Identify individuals with <2%
+lt2percent <- prop_snps_breeding[prop_snps_breeding$anc_prop < 0.02, ] %>% arrange(sample)
+write_delim(lt1percent, file="wild_introgressed_prop.lt2percent.txt", delim="\t", quote="none", col_names=TRUE)
+
+# Sorted by sample names
 ggplot(prop_anc_summary, aes(x=sample, y=anc_prop, fill=ancestry)) +
   geom_col(position=position_dodge2(width = 0.7, preserve = "single")) +
   scale_fill_manual(values=c("#476C9B", "#ADD9F4", "#dee2e6")) +
@@ -86,16 +99,15 @@ ggplot(prop_anc_summary, aes(x=sample, y=anc_prop, fill=ancestry)) +
         axis.text.x=element_text(angle=45, hjust=1)) +
   xlab("Wild Samples") +
   ylab("Proportion of SNPs in Group")
-
 # Save plot
-ggsave("wild_introgressed_prop.jpg", width=10, height=6, units="in", dpi=300)
+ggsave("wild_introgressed_prop.jpg", width=18, height=6, units="in", dpi=300)
 
 #-----------------
 # Plot per sample introgressed segments on chromosomes
 # Define colors for groups
 color_breeding <- "#a70b0b"
-#color_wild <- "#bfdbf7"
-color_wild <- "#dee2e6"
+color_wild <- "#bfdbf7"
+#color_wild <- "#dee2e6"
 color_hom_ref <- "#dee2e6"
 
 # Prepare introgressed regions based on consecutive markers to save to file
@@ -104,8 +116,70 @@ df_introgressed_regions <- df_anc %>%
   summarise(start = gdata::first(start), end=gdata::last(end), .groups='drop') %>%
   dplyr::select(chr, start, end, sample, gt, an1, an2, ancestry) %>%
   as.data.frame()
+# Add size of introgressed intervals
+df_introgressed_regions$bp_length <- df_introgressed_regions$end - df_introgressed_regions$start
+df_introgressed_regions$Mbp_length <- df_introgressed_regions$bp_length / 1000000
 # Save to file
-write_delim(df_introgressed_regions, file="wbdc_likely_introgressed_segments.txt", delim="\t", quote="none")
+write_delim(as.data.frame(df_introgressed_regions), file="wbdc_likely_introgressed_segments.txt", delim="\t", quote="none")
+
+#-----------------
+# Calculate average number and size of introgressed regions
+df_breeding_introgressed <- df_introgressed_regions[df_introgressed_regions$ancestry == "breeding", ]
+# Save to file
+write_csv(df_breeding_introgressed, file="wbdc_likely_introgressed_segments-breeding.csv", quote="none", col_names=TRUE)
+
+# Total number of tracts
+nrow(df_breeding_introgressed)
+
+# Format regions that are "breeding" to BED
+bed_introgressed <- data.frame(chr=df_breeding_introgressed$chr, start=df_breeding_introgressed$start-1, end=df_breeding_introgressed$end)
+# Save to file
+write_delim(bed_introgressed, file="wbdc_likely_introgressed_segments-breeding.bed", delim="\t", quote="none", col_names=FALSE)
+
+# Per individual counts
+df_breeding_introgressed %>%
+  group_by(sample) %>%
+  dplyr::summarize(num_introgressed=n()) %>%
+  write_csv(file="mean_per_sample_counts_of_introgressed_regions.csv", col_names=TRUE, quote="none")
+
+df_breeding_introgressed %>%
+  group_by(sample) %>%
+  dplyr::summarize(num_introgressed=n()) %>%
+  dplyr::summarize(mean(num_introgressed))
+
+# Average length
+mean(df_breeding_introgressed$Mbp_length)
+
+# Per chromosome average length
+df_breeding_introgressed %>%
+  group_by(chr) %>%
+  dplyr::summarize(mean(Mbp_length)) %>%
+  write_csv(file="mean_per_chr_introgressed_length_breeding.csv", col_names=TRUE, quote="none")
+
+# Number of segments > 50 Mbp
+nrow(df_breeding_introgressed[df_breeding_introgressed$Mbp_length >= 50, ])
+nrow(df_breeding_introgressed[df_breeding_introgressed$Mbp_length >= 100, ])
+nrow(df_breeding_introgressed[df_breeding_introgressed$Mbp_length >= 200, ])
+
+df_breeding_introgressed[df_breeding_introgressed$Mbp_length >= 100, ]
+df_breeding_introgressed[df_breeding_introgressed$Mbp_length >= 200, ]
+unique(df_breeding_introgressed[df_breeding_introgressed$Mbp_length >= 100, c("chr", "start", "end", "sample")])
+unique(df_breeding_introgressed[df_breeding_introgressed$Mbp_length >= 50, c("chr", "start", "end", "sample")])
+
+#-----------------
+
+# Plot length distribution of wild-domesticated introgression tracts
+ggplot(df_breeding_introgressed, aes(x=chr, y=Mbp_length)) +
+  geom_boxplot(outlier.shape = 1) +
+  theme_classic() +
+  theme(axis.text=element_text(size=16),
+        axis.title=element_text(size=18),
+        legend.text=element_text(size=16),
+        legend.title=element_blank()) +
+  xlab("Chromosome") +
+  ylab("Introgressed Segment Size (Mbp)")
+# Save plot
+ggsave("wild_introgressed_size_distribution.jpg", width=10, height=6, units="in", dpi=300)
 
 # Prepare version for chromPlot
 df_regions_gt <- df_anc %>%
@@ -125,7 +199,6 @@ df_regions_gt <- df_anc %>%
 colnames(df_regions_gt) <- c("Chrom", "Start", "End", "sample", "gt", "Name", "Colors")
 
 for (samp in sample_names) {
-  print(p)
   # Select sample
   curr_sample <- df_regions_gt[df_regions_gt$sample == samp, ] %>%
     dplyr::select(Chrom, Start, End, Name, Colors)

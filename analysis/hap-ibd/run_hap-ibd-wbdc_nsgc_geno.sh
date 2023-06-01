@@ -1,4 +1,17 @@
 #!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=8
+#SBATCH --mem=22gb
+#SBATCH --tmp=6gb
+#SBATCH -t 00:30:00
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=liux1299@umn.edu
+#SBATCH -p small,ram256g,ram1t
+#SBATCH -o %j.out
+#SBATCH -e %j.err
+
+set -e
+set -o pipefail
 
 # Dependencies
 module load java/openjdk-8_202
@@ -15,10 +28,18 @@ OUT_PREFIX="dom_and_wild_with_introgressed_geno"
 # Output directory
 OUT_DIR="/panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/hap_ibd"
 
+# Max gap
+# Try max intermarker distance from VCF
+MAX_GAP="1000"
+# Minimum number of markers for an IBS segment
+MIN_MARKERS="20"
+
 #------------------
-mkdir -p ${OUT_DIR}
+mkdir -p ${OUT_DIR} ${OUT_DIR}/minmarkers${MIN_MARKERS}_maxgap${MAX_GAP}
 
 java -jar ${JAR_FILE} \
     gt=${GT_VCF} \
     map=${MAP} \
-    out=${OUT_DIR}/${OUT_PREFIX}.hap-ibd.out
+    out=${OUT_DIR}/minmarkers${MIN_MARKERS}_maxgap${MAX_GAP}/${OUT_PREFIX}.hap-ibd.out \
+    max-gap=${MAX_GAP} \
+    min-markers=${MIN_MARKERS}

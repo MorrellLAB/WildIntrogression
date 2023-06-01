@@ -67,6 +67,8 @@ sbatch --array=0-9 run_admixture-nsgc_and_wild_geno.sh
 
 ### Prepare population files for plotting
 
+Prepare ind2pop.txt files for pong.
+
 ```bash
 # In dir: ~/Projects/Introgressed/genetic_assignment/data_morex_v3
 module load python3/3.8.3_anaconda2020.07_mamba
@@ -76,6 +78,32 @@ module load python3/3.8.3_anaconda2020.07_mamba
 
 # NSGC and WBDC genotype data
 ~/GitHub/WildIntrogression/analysis/genetic_assignment/fam_to_pong_pop.py nsgc_and_wbdc_geno_snps_morex_v3_wPopInfo.pruned.fam ~/GitHub/WildIntrogression/analysis/genetic_assignment/accession_types_codes.txt > ~/GitHub/WildIntrogression/analysis/genetic_assignment/ind2pop-nsgc_and_wbdc_geno.txt
+```
+
+Prepare filemap for pong.
+
+```bash
+cd ~/Projects/Introgressed/genetic_assignment/Admixture_nsgc_and_wild
+# Column3 paths must be relative to the directory of the .Qfilemap
+find -name "*.Q" | sed 's,./,,' | tr '/' '\t' | tr '.' '\t' | awk '{ print "k"$4 $1 "\t" $4 "\t" $1"/"$2"."$3"."$4"."$5 }' | sort -k2,2V -k1,1V > nsgc_and_wbdc_geno_snps_morex_v3_wPopInfo.pruned.Qfilemap
+head -n 90 nsgc_and_wbdc_geno_snps_morex_v3_wPopInfo.pruned.Qfilemap > nsgc_and_wbdc_geno_snps_morex_v3_wPopInfo.pruned.k2-10.Qfilemap
+
+cd ~/Projects/Introgressed/genetic_assignment/Admixture_wild_only_pruned
+# Column3 paths must be relative to the directory of the .Qfilemap
+find -name "*.Q" | sed 's,./,,' | tr '/' '\t' | tr '.' '\t' | awk '{ print "k"$4 $1 "\t" $4 "\t" $1"/"$2"."$3"."$4"."$5 }' | sort -k2,2V -k1,1V > wbdc_bopa_snps_morex_v3_wPopInfo.pruned.Qfilemap
+head -n 90 wbdc_bopa_snps_morex_v3_wPopInfo.pruned.Qfilemap > wbdc_bopa_snps_morex_v3_wPopInfo.pruned.k2-10.Qfilemap
+```
+
+### Run pong
+
+On local computer, run pong (so we can open visualization results in browser):
+
+```bash
+# In dir: ~/Dropbox/Projects/Wild_Introgression/Analyses/genetic_assignment/Admixture_nsgc_and_wild
+#pong -m nsgc_and_wbdc_geno_snps_morex_v3_wPopInfo.pruned.Qfilemap -i ~/GitHub/WildIntrogression/analysis/genetic_assignment/ind2pop-nsgc_and_wbdc_geno.txt
+pong -m nsgc_and_wbdc_geno_snps_morex_v3_wPopInfo.pruned.k2-10.Qfilemap -i ~/GitHub/WildIntrogression/analysis/genetic_assignment/ind2pop-nsgc_and_wbdc_geno.txt
+
+pong -m wbdc_bopa_snps_morex_v3_wPopInfo.pruned.k2-10.Qfilemap -i ~/GitHub/WildIntrogression/analysis/genetic_assignment/ind2pop-wbdc_bopa_snps.txt
 ```
 
 ---

@@ -17,11 +17,20 @@ cd ${OUT_DIR}
 function run_admixture() {
     local plink_bed=$1
     local kval=$2
+    local prefix=$3
     random_seed=${RANDOM}
     admixture --seed=${random_seed} ${plink_bed} ${kval} --haploid="*"
-    admixture --seed=${random_seed} --cv ${plink_bed} ${kval} | tee log${kval}.out
+    admixture --cv ${plink_bed} ${kval} | tee log.${prefix}.${kval}.out
 }
 
 export -f run_admixture
 
-parallel --verbose run_admixture ${PLINK_BED} {} ::: $(seq ${MIN_K} ${MAX_K})
+prefix=$(basename ${PLINK_BED} .bed)
+
+parallel --verbose run_admixture ${PLINK_BED} {} ${prefix} ::: $(seq ${MIN_K} ${MAX_K})
+
+# Compile cross-validation error results across values of K
+echo "# CV results" > ${OUT_DIR}/${prefix}.CV.txt
+for ((K=${MIN_K};K<=${MAX_K};K++)); do
+    awk -v K=$K '$1=="CV"{ print K,$4 }' ${OUT_DIR}/log.${prefix}.${K}.out >> ${OUT_DIR}/${prefix}.CV.txt
+done

@@ -1,6 +1,7 @@
 wild    1
-landrace    2
-cultivar    3
-breeding    3
-genetic    3
-uncertain    4
+wild_introgressed    2
+landrace    3
+cultivar    4
+breeding    5
+genetic    6
+uncertain    7

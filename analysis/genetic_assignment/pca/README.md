@@ -42,3 +42,14 @@ out_prefix="dom_and_wbdc_geno_samples"
 # Run plink PCA
 plink --vcf ${vcf_file} --pca --keep-allele-order --allow-extra-chr --out ${out_dir}/${out_prefix}.pca
 ```
+
+Run Plink PCA on the WBDC GBS dataset.
+
+```bash
+vcf_file="/panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/vcf/Ahmad_GBS_morex_v3/WBDC_GBS_snps_morex_v3.biallelic.mafgt0.0016.filt_miss_het.vcf.gz"
+out_dir="/panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/genetic_assignment/plink_pca"
+out_prefix="wbdc_gbs"
+
+# Run plink PCA
+plink --vcf ${vcf_file} --pca --keep-allele-order --allow-extra-chr --out ${out_dir}/${out_prefix}.pca
+```

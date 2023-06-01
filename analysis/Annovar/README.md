@@ -4,13 +4,6 @@ Run [ANNOVAR](https://annovar.openbioinformatics.org/en/latest/) to annotate int
 
 **Purpose:** To prepare the nonsynonymous SNPs for predicting deleterious SNPs using BAD_Mutations and other downstream tools.
 
-### Files required
-
-- VCF file: `/panfs/jay/groups/9/morrellp/shared/Projects/Mutant_Barley/de_novo_vcfs/mut8_and_3mut10xGenomics.SNPs.private.vcf.gz`
-- Reference genome file: `/panfs/jay/groups/9/morrellp/shared/References/Reference_Sequences/Barley/Morex_v3/Barley_MorexV3_pseudomolecules_parts.fasta`
-- GFF3 file(s):
-    - All: `/panfs/jay/groups/9/morrellp/shared/References/Reference_Sequences/Barley/Morex_v3/PhytozomeV13_HvulgareMorex_V3/annotation/HvulgareMorex_702_V3.gene.parts.gff3`
-
 ### ANNOVAR Steps
 
 We will mostly follow the guide here: https://annovar.openbioinformatics.org/en/latest/user-guide/gene/. We'll run it for both high confidence gene models and all gene models.

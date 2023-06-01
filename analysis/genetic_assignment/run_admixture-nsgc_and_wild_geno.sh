@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=16
-#SBATCH --mem=22gb
+#SBATCH --ntasks-per-node=8
+#SBATCH --mem=8gb
 #SBATCH --tmp=6gb
-#SBATCH -t 02:00:00
+#SBATCH -t 00:30:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=liux1299@umn.edu
 #SBATCH -p small,ram256g,ram1t
@@ -43,7 +43,5 @@ echo "Maximum array limit is ${MAX_ARRAY_LIMIT}."
 CURR_REP_RUN=${REP_RUNS_ARR[${SLURM_ARRAY_TASK_ID}]}
 echo "Current replicate run we are processing in task array index ${SLURM_ARRAY_TASK_ID}: run ${CURR_REP_RUN}"
 
+# Run admixture with one replicate run per Slurm job array
 ${ADMIXTURE_SCRIPT} ${PLINK_BED} ${OUT_DIR}/run${CURR_REP_RUN} ${MIN_K} ${MAX_K}
-
-# Run admixture with replicate runs in parallel
-parallel --verbose ${ADMIXTURE_SCRIPT} ${PLINK_BED} ${OUT_DIR}/run{} ${MIN_K} ${MAX_K} ::: $(seq 1 ${NUM_REP_RUNS})
