@@ -16,7 +16,7 @@ set -o pipefail
 module load python3/3.8.3_anaconda2020.07_mamba
 GGDIR="/panfs/jay/groups/9/morrellp/liux1299/Software/genomics_general"
 
-VCF="/panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/vcf/morex_v3/Filtered/phased_and_imputed/dom_and_wild_with_introgressed_merged.phased.imputed.no_missing.vcf.gz"
+VCF="/panfs/jay/groups/9/morrellp/shared/Datasets/Alignments/introgression_project/all_dom_and_wild/Filtered/dom_and_wild_snps_biallelic.callable.cap50x.final.vcf.gz"
 OUT_DIR="/panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/diversity"
 POPS_FILE=~/GitHub/WildIntrogression/analysis/ABBA-BABA/dom-wild.pops.txt
 

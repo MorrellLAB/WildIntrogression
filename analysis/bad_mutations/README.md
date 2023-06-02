@@ -77,6 +77,9 @@ sbatch --array=153-165,167-176,180-189 bad_mut_predict-dom_and_wild_snps.sh
 get_timeout_array_indices.sh 157687553
 # JobID 157804494
 sbatch --array=190-193 bad_mut_predict-dom_and_wild_snps.sh
+
+get_re-run_array_indices.sh 157734459
+sbatch --array=0-2,4,6,10-16,18-35,40,43-61,63-65,70-91,94,98-111,113-114,117,119-143,145,147,152 bad_mut_predict-dom_and_wild_snps.sh
 ```
 
 Note: lists 194-209 contain chrUn so no output directories are written. Example, see: `/panfs/jay/groups/9/morrellp/shared/Projects/WBDC_inversions/bad_mutations/results/MSA_output/hvulgare_cds_list-194`

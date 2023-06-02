@@ -16,3 +16,11 @@ Calculate the depth of each BAM file with mosdepth.
 # In dir: ~/GitHub/WildIntrogression/00_sequence_processing
 sbatch --array=0-634 run_mosdepth.sh
 ```
+
+Summarize average genome-wide coverage per sample.
+
+```bash
+# In dir: ~/Projects/Introgressed/coverage_exome
+module load datamash_ML/1.3
+grep -v "chrUn" PI_498431.mosdepth.summary.txt | grep -v "total" | grep -v "_region"
+```

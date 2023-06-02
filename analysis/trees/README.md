@@ -2,6 +2,39 @@
 
 Draw trees to decide on an intial set of WBDC samples to include in query panel for looking at potential introgression from domesticated samples.
 
+### Add outgroup
+
+```bash
+module load bcftools/1.10.2
+module load htslib/1.9
+module load bedops_ML/2.4.38
+module load bedtools/2.29.2
+
+VCF="/panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/vcf/morex_v3/Filtered/wbdc_bopa_snps.polymorphic.filt_miss_het.vcf.gz"
+VCF_OUTGROUP="/panfs/jay/groups/9/morrellp/shared/Datasets/Outgroups/morex_v3_outgroups_vcf/murinum_snps_final_pseudo.vcf.gz"
+OUT_DIR="/panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/vcf/morex_v3/Filtered"
+OUT_PREFIX="murinum-wbdc_bopa_snps.polymorphic.filt_miss_het"
+
+REF_FASTA="/panfs/jay/groups/9/morrellp/shared/References/Reference_Sequences/Barley/Morex_v3/Barley_MorexV3_pseudomolecules.fasta"
+
+# Fix strand orientation first
+bcftools +fixref ${VCF} -Ov -o ${OUT_DIR}/${vcf_prefix}.fixedref.vcf -- -f ${REF_FASTA} -m top
+
+# Generate a list of regions of the VCF containing samples
+# Outgroup VCF likely contains many sites that are not present in our samples
+# Here we only care about sitez present in our samples
+vcf_prefix=$(basename ${VCF} .vcf.gz)
+zcat ${VCF} | vcf2bed | cut -f 1-4 > ${OUT_DIR}/${vcf_prefix}.bed
+# Pull out sites where outgroup intersects with samples
+vcf_outgroup_prefix=$(basename ${VCF_OUTGROUP} .vcf.gz)
+bedtools intersect -header -wa -a ${VCF_OUTGROUP} -b ${OUT_DIR}/${vcf_prefix}.bed > ${OUT_DIR}/${vcf_outgroup_prefix}.intersect.vcf
+bgzip ${OUT_DIR}/${vcf_outgroup_prefix}.intersect.vcf
+tabix -p vcf --csi ${OUT_DIR}/${vcf_outgroup_prefix}.intersect.vcf.gz
+
+# Merge vcf containing samples with vcf containing outgroup
+bcftools merge -m snps -O z -o ${OUT_DIR}/${OUT_PREFIX}.vcf.gz ${OUT_DIR}/${vcf_outgroup_prefix}.intersect.vcf.gz ${OUT_DIR}/${vcf_prefix}.fixedref.vcf.gz
+```
+
 ### Convert VCF to PHYLIP format
 
 ```bash
@@ -13,7 +46,9 @@ OUT_DIR="/panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/trees"
 
 ```bash
 # WBDC only BOPA/9k genotypes
+cd ~/Software/vcf2phylip/
 ./vcf2phylip.py --input /panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/vcf/morex_v3/Filtered/wbdc_bopa_snps.polymorphic.filt_miss_het.vcf.gz --output-folder ${OUT_DIR}
+#./vcf2phylip.py --input /panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/vcf/morex_v3/Filtered/murinum-wbdc_bopa_snps.polymorphic.filt_miss_het.vcf.gz --outgroup "murinum_BCC2017" --output-folder ${OUT_DIR}
 ```
 
 ```bash
@@ -63,6 +98,7 @@ cd ~/Projects/Introgressed/trees
 dnadist
 # Prompt for input file, paste the following:
 /panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/trees/wbdc_bopa_snps.polymorphic.filt_miss_het.min4.phy
+#/panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/trees/murinum-wbdc_bopa_snps.polymorphic.filt_miss_het.min4.phy
 # Menu options will pop up
 # Accept defaults
 Y
@@ -72,6 +108,7 @@ mv outfile wbdc_bopa_snps.polymorphic.filt_miss_het.min4.phylip.outfile
 # Run neighbor
 neighbor
 /panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/trees/wbdc_bopa_snps.polymorphic.filt_miss_het.min4.phylip.outfile
+#/panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/trees/murinum-wbdc_bopa_snps.polymorphic.filt_miss_het.min4.phylip.outfile
 Y
 # Rename output files
 mv outtree wbdc_bopa_snps.polymorphic.filt_miss_het.min4.phylip.outtree

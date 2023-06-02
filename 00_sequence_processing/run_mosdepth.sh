@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=6
-#SBATCH --mem=12gb
-#SBATCH --tmp=10gb
-#SBATCH -t 01:00:00
+#SBATCH --mem=10gb
+#SBATCH --tmp=6gb
+#SBATCH -t 00:30:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=liux1299@umn.edu
 #SBATCH -p small,ram256g,ram1t
@@ -21,10 +21,14 @@ export PATH=${PATH}:/panfs/jay/groups/9/morrellp/shared/Software/mosdepth
 
 # User provided input arguments
 BAM_LIST="/scratch.global/liux1299/temp_bam_introgression/all_bam_files_list.txt"
-# Window size in bp for coverage estimation
-WIN_SIZE="100"
+
+# Provide regions file since this is exome capture data
+REGIONS="/panfs/jay/groups/9/morrellp/shared/References/Reference_Sequences/Barley/Morex_v3/captured_50x_morex_v3_partsRef.bed"
+
 REF_FASTA="/panfs/roc/groups/9/morrellp/shared/References/Reference_Sequences/Barley/Morex_v3/Barley_MorexV3_pseudomolecules_parts.fasta"
 OUT_DIR="/panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/coverage_exome"
+
+NUM_THREADS="6"
 
 #------------------
 mkdir -p ${OUT_DIR}
@@ -41,8 +45,9 @@ echo "Currently processing bam file: ${CURR_BAM}"
 
 function run_mosdepth() {
     local bam_file="$1"
-    local win_size="$2"
+    local regions="$2"
     local ref="$3"
+    local num_threads="$4"
     # Check if sample name contains substring
     if [[ "${bam_file}" == *"_phased_possorted_bam.bam"* ]]
     then
@@ -52,7 +57,7 @@ function run_mosdepth() {
         sample_prefix=$(basename ${bam_file} .bam)
     fi
     set -x # For debugging
-    mosdepth --by ${win_size} --threads 6 --fast-mode --fasta ${ref} --no-per-base ${sample_prefix} ${bam_file}
+    mosdepth --by ${regions} --threads ${num_threads} --fast-mode --fasta ${ref} --no-per-base ${sample_prefix} ${bam_file}
 }
 
 export -f run_mosdepth
@@ -60,4 +65,4 @@ export -f run_mosdepth
 # Go into out directory
 cd ${OUT_DIR}
 # Run mosdepth per sample
-run_mosdepth ${CURR_BAM} ${WIN_SIZE} ${REF_FASTA}
+run_mosdepth ${CURR_BAM} ${REGIONS} ${REF_FASTA} ${NUM_THREADS}
