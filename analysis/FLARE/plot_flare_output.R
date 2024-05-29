@@ -310,6 +310,7 @@ df_breeding_introgressed[df_breeding_introgressed$Mbp_length >= 50, ]
 #-----------------
 
 # Plot length distribution of wild-domesticated introgression tracts
+
 ggplot(df_breeding_introgressed, aes(x=chr, y=Mbp_length)) +
   geom_boxplot(outlier.shape = 1) +
   theme_classic() +
@@ -318,7 +319,9 @@ ggplot(df_breeding_introgressed, aes(x=chr, y=Mbp_length)) +
         legend.text=element_text(size=16),
         legend.title=element_blank()) +
   xlab("Chromosome") +
-  ylab("Introgressed Segment Size (Mbp)")
+  ylab("Introgressed Segment Size (Mbp)") +
+  ylim(0, 3)
+
 # Save plot
 ggsave("wild_introgressed_size_distribution.jpg", width=10, height=6, units="in", dpi=300)
 
