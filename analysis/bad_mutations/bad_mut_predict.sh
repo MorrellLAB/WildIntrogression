@@ -148,6 +148,12 @@ function predict_sub() {
                 tmp_list_num=$(expr $list_num - 1)
                 #prev_list_num=$(seq -f '%03g' ${tmp_list_num} ${tmp_list_num})
                 prev_list_num=$(echo ${tmp_list_num} | sed 's/^/0/')
+            elif [ ${curr_list_num} == "010" ]; then
+                # Add two leading zeros
+                # Edge case when list_num=10 and previous list should be 009
+                tmp_list_num=$(expr $list_num - 1)
+                #prev_list_num=$(seq -f '%03g' ${tmp_list_num} ${tmp_list_num})
+                prev_list_num=$(echo ${tmp_list_num} | sed 's/^/0/')
             else
                 prev_list_num=$(expr $list_num - 1)
             fi

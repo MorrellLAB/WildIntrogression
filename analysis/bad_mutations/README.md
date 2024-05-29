@@ -80,6 +80,28 @@ sbatch --array=190-193 bad_mut_predict-dom_and_wild_snps.sh
 
 get_re-run_array_indices.sh 157734459
 sbatch --array=0-2,4,6,10-16,18-35,40,43-61,63-65,70-91,94,98-111,113-114,117,119-143,145,147,152 bad_mut_predict-dom_and_wild_snps.sh
+
+get_re-run_array_indices.sh 157841940
+# JobID 157875889
+sbatch --array=10,13-14,16,18-20,24,30,47-53,60,63,73,75-76,78-80,86,89,103,105-107,123,125-129,131-137,139-140,142-143 bad_mut_predict-dom_and_wild_snps.sh
+
+get_re-run_array_indices.sh 157875889
+# JobID 157900767
+sbatch --array=10 bad_mut_predict-dom_and_wild_snps.sh
 ```
 
 Note: lists 194-209 contain chrUn so no output directories are written. Example, see: `/panfs/jay/groups/9/morrellp/shared/Projects/WBDC_inversions/bad_mutations/results/MSA_output/hvulgare_cds_list-194`
+
+Check which subdirectories have problematic predictions (i.e., error when this step was run resulting in output files with error messages).
+
+```bash
+# In dir: ~/scratch/bad_mutations/predict_output_dom_and_wild_snps
+find hvulgare_cds_list-* -mindepth 1 -maxdepth 1 -not -empty -type d | wc -l
+```
+
+#### Step 6: Compile Predictions
+
+```bash
+# In dir: ~/GitHub/WildIntrogression/analysis/bad_mutations
+sbatch bad_mut_compile_predict-dom_and_wild_snps.sh
+```
