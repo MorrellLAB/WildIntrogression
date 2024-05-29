@@ -8,6 +8,8 @@ library(gdata)
 library(R.utils)
 library(chromPlot)
 library(ggbeeswarm)
+library(ggridges)
+library(forcats)
 
 setwd("~/Dropbox/Projects/Wild_Introgression/Analyses/local_ancestry-flare/plots")
 
@@ -88,6 +90,40 @@ df_anc <- df %>%
       .default = "other"
     )
   )
+
+#--------------------
+# Density plot of distribution along chromosomes
+df_anc_dom <- df_anc %>%
+  filter(ancestry == "breeding")
+df_anc_dom$end_Mbp <- df_anc_dom$end / 1000000
+
+centromere$End_Mbp <- centromere$End / 1000000
+tmp_centromere <- centromere
+colnames(tmp_centromere)[1] <- "chr"
+
+df_anc_dom_cent <- left_join(df_anc_dom, tmp_centromere, by="chr")
+
+ggplot(df_anc_dom_cent, aes(x=end_Mbp)) +
+  geom_vline(aes(xintercept=End_Mbp), colour="lightgrey") +
+  geom_density(fill="lightblue", alpha=0.5, trim=TRUE) +
+  theme_classic() +
+  facet_wrap(~chr, ncol=1, strip.position="left") +
+  xlab("Physical Position (Mbp)") +
+  ylab("Density of introgressed SNPs") +
+  theme(strip.background = element_blank(),
+        strip.text.y.left = element_text(angle=0, size=16),
+        axis.text = element_text(size=16),
+        axis.title = element_text(size=18))
+# Save plot
+ggsave("wild_introgression_location_distribution.jpg", width = 12, height = 7, dpi=300)
+
+# ggplot(df_anc_dom, aes(x=end_Mbp, y=fct_relevel(factor(chr), c("chr7H", "chr6H", "chr5H", "chr4H", "chr3H", "chr2H", "chr1H")), height=..density..)) +
+#   geom_density_ridges(stat="density", trim=TRUE, fill="#2b83ba", alpha=0.2) +
+#   theme_minimal() +
+#   xlab("Physical Position (Mbp)") +
+#   ylab("Density of introgressed SNPs") +
+#   theme(axis.text = element_text(size=16),
+#         axis.title = element_text(size=18))
 
 #---------------------
 # Plot proportion of SNPs assigned to each group
@@ -285,6 +321,20 @@ ggplot(df_breeding_introgressed, aes(x=chr, y=Mbp_length)) +
   ylab("Introgressed Segment Size (Mbp)")
 # Save plot
 ggsave("wild_introgressed_size_distribution.jpg", width=10, height=6, units="in", dpi=300)
+
+# Zoomed in version of wild-domesticated introgression tracts
+ggplot(df_breeding_introgressed, aes(x=chr, y=Mbp_length)) +
+  geom_boxplot(outlier.shape = 1) +
+  theme_classic() +
+  theme(axis.text=element_text(size=16),
+        axis.title=element_text(size=18),
+        legend.text=element_text(size=16),
+        legend.title=element_blank()) +
+  xlab("Chromosome") +
+  ylab("Introgressed Segment Size (Mbp)") +
+  ylim(0, 3)
+# Save plot
+ggsave("wild_introgressed_size_distribution-zoomed_3Mb.jpg", width=10, height=6, units="in", dpi=300)
 
 # Prepare version for chromPlot
 df_regions_gt <- df_anc %>%
