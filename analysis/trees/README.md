@@ -188,5 +188,3 @@ ERROR: bad base: E at site     1 of species 544
 
 # Likely an issue with the original file conversion
 ```
-
-
