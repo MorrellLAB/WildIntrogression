@@ -31,6 +31,7 @@ df_aug2007 <- df_aug2007 %>%
     )
   )
 
+#------------------
 # Explore outliers
 df_aug2007 %>% dplyr::select(ID, Pop, Flag_leaf_length) %>% arrange(desc(Flag_leaf_length)) %>% dplyr::top_n(5)
 df_aug2007 %>% dplyr::select(ID, Pop, Flag_leaf_width) %>% arrange(desc(Flag_leaf_width)) %>% dplyr::top_n(5)
@@ -185,6 +186,31 @@ spike_awn_traits_07 %>%
     count=n(), median=median(Measurement, na.rm=TRUE), IQR=IQR(Measurement, na.rm=TRUE)
   )
 
+wilcox.test(awn.introgressed, awn.wild)
+
 #------------------
 # Read in data
 df_leaf1and2 <- readxlsx(fp_wbdc_2021, sheet="1st Leaf and 2nd Leaf")
+
+#------------------
+# Figures for talks
+# Subset trait measurements
+# Flag leaf width and awn length
+fl_awn_traits_07 <- df_aug2007 %>%
+  dplyr::select(ID, Pop, Flag_leaf_width, Awn_length) %>%
+  pivot_longer(cols=c('Flag_leaf_width', 'Awn_length'),
+               names_to="Trait",
+               values_to="Measurement") %>%
+  as.data.frame()
+
+# Leaf width and awn length plot
+ggplot(fl_awn_traits_07, aes(x=Trait, y=Measurement, fill=Pop)) +
+  geom_violin(width=0.8, position=position_dodge(0.8), alpha=0.5) +
+  geom_boxplot(width=0.1, alpha=0.8, position=position_dodge(0.8)) +
+  scale_fill_manual(values=c("#cce3de", "#3c6e71")) +
+  theme_classic() +
+  ylab("Measurement (mm)") +
+  theme(axis.text=element_text(size=16),
+        axis.title=element_text(size=18)) +
+  ylim(0, max(fl_awn_traits_07$Measurement))
+ggsave("wbdc_aug07-flag_leaf_width_and_awn_length.jpg", width=6, height=5, units="in", dpi=300)
