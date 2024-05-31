@@ -2,14 +2,29 @@
 
 library(tidyverse)
 library(readxl)
+library(writexl)
 
 old_fp <- "~/Dropbox/Projects/Wild_Introgression/Figure_and_Table_Drafts/Figures_and_Tables_v1/Table S1.xlsx"
 full_passport_fp <- "~/Dropbox/Projects/Wild_Introgression/Steffenson_Comments/ALL_WBDC_PASSPORT_INFO_MAY-2023.xlsx"
+
+# Introgressed sample lists
+# Wild-introgressed identified in Fang et al 2014
+fang_2014_fp <- "~/GitHub/WildIntrogression/analysis/trees/Fang_et_al_2014_wild-introgressed_list.txt"
+this_study_fp <- "~/Dropbox/Projects/Wild_Introgression/Figure_and_Table_Drafts/Figures_and_Tables_v3/Table S3 - per_sample_counts_of_introgressed_regions.csv"
 
 #-------------
 df_old <- read_excel(old_fp, sheet=1)
 df_passport <- read_excel(full_passport_fp, sheet=1)
 df_passport <- df_passport[1:318, ]
+
+df_fang_2014 <- read.delim(fang_2014_fp, header = F)
+colnames(df_fang_2014)[1] <- "Accession_ID"
+df_fang_2014$Identified_in_Previous_Study <- "Fang et al 2014"
+
+df_this_study <- read.csv(this_study_fp) %>% select(sample)
+colnames(df_this_study)[1] <- "Accession_ID"
+df_this_study$Identified_in_This_Study <- "x"
+df_this_study$Approaches <- "FLARE"
 
 df_reordered <- df_old[, c("Accession_ID", "Country_of_Origin", "Longitude", "Latitude", "Accession_Type")]
 
@@ -30,4 +45,8 @@ df_sub$Accession_Type <- "wild"
 
 df_updated <- rbind(df_sub, df_dom)
 
-write_csv(df_updated, file="~/Dropbox/Projects/Wild_Introgression/Figure_and_Table_Drafts/Figures_and_Tables_v3/Table S1.csv", na="")
+# Add wild-introgressed columns
+temp_df <- left_join(df_updated, df_fang_2014, by="Accession_ID")
+df_updated_introg <- left_join(temp_df, df_this_study, by="Accession_ID")
+
+writexl::write_xlsx(df_updated_introg, path="~/Dropbox/Projects/Wild_Introgression/Figure_and_Table_Drafts/Figures_and_Tables_v3/Table S1.xlsx")
