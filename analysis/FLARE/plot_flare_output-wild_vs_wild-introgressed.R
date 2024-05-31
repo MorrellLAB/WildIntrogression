@@ -146,9 +146,9 @@ regions_wild_rand3 <- prep_introg_regions(df_wild_rand3)
 
 # Pull out categories for wild vs wild-introgressed IBS segment lengths comparison
 wild_introgressed_breeding <- regions_wild_introgressed[regions_wild_introgressed$ancestry == "breeding", ]
-wild_rand1_wild <- regions_wild_rand1[regions_wild_rand1$ancestry == "wild", ]
-wild_rand2_wild <- regions_wild_rand2[regions_wild_rand2$ancestry == "wild", ]
-wild_rand3_wild <- regions_wild_rand3[regions_wild_rand3$ancestry == "wild", ]
+wild_rand1_wild <- regions_wild_rand1[regions_wild_rand1$ancestry == "hom_reference", ]
+wild_rand2_wild <- regions_wild_rand2[regions_wild_rand2$ancestry == "hom_reference", ]
+wild_rand3_wild <- regions_wild_rand3[regions_wild_rand3$ancestry == "hom_reference", ]
 
 # Add column indicating grouping
 wild_introgressed_breeding$Dataset <- "Wild-introgressed"
@@ -188,7 +188,7 @@ ggplot(df_comb, aes(x=Dataset, y=Mbp_length)) +
   ylab("IBS Segment Length (Mbp)")
 
 # Save plot
-ggsave("ibs_lengths_wild_vs_wild-introgressed_jitterplot.jpg", width=12, height=10, units="in", dpi=300)
+ggsave("ibs_lengths_wild_vs_wild-introgressed_jitterplot-anc_hom_ref.jpg", width=12, height=10, units="in", dpi=300)
 
 ggplot(df_comb, aes(x=chr, y=Mbp_length, fill=Dataset)) +
   geom_boxplot(alpha=0.8) +
@@ -203,5 +203,5 @@ ggplot(df_comb, aes(x=chr, y=Mbp_length, fill=Dataset)) +
   ylab("IBS Segment Length (Mbp)")
 
 # Save plot
-ggsave("ibs_lengths_wild_vs_wild-introgressed_by_chr_boxplot.jpg", width=14, height=12, units="in", dpi=300)
+ggsave("ibs_lengths_wild_vs_wild-introgressed_by_chr_boxplot-anc_hom_ref.jpg", width=14, height=12, units="in", dpi=300)
  
