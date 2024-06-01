@@ -310,7 +310,6 @@ df_breeding_introgressed[df_breeding_introgressed$Mbp_length >= 50, ]
 #-----------------
 
 # Plot length distribution of wild-domesticated introgression tracts
-
 ggplot(df_breeding_introgressed, aes(x=chr, y=Mbp_length)) +
   geom_boxplot(outlier.shape = 1) +
   theme_classic() +
@@ -319,25 +318,25 @@ ggplot(df_breeding_introgressed, aes(x=chr, y=Mbp_length)) +
         legend.text=element_text(size=16),
         legend.title=element_blank()) +
   xlab("Chromosome") +
-  ylab("Introgressed Segment Size (Mbp)") +
-  ylim(0, 3)
+  ylab("Introgressed Segment Size (Mbp)")
 
 # Save plot
 ggsave("wild_introgressed_size_distribution.jpg", width=10, height=6, units="in", dpi=300)
 
 # Zoomed in version of wild-domesticated introgression tracts
+# Use coord_cartesian(ylim=...) to zoom without changing the data that is included
 ggplot(df_breeding_introgressed, aes(x=chr, y=Mbp_length)) +
   geom_boxplot(outlier.shape = 1) +
   theme_classic() +
-  theme(axis.text=element_text(size=16),
-        axis.title=element_text(size=18),
-        legend.text=element_text(size=16),
+  theme(axis.text=element_text(size=14),
+        axis.title=element_text(size=16),
+        legend.text=element_text(size=14),
         legend.title=element_blank()) +
   xlab("Chromosome") +
   ylab("Introgressed Segment Size (Mbp)") +
-  ylim(0, 3)
+  coord_cartesian(ylim=c(0, 4))
 # Save plot
-ggsave("wild_introgressed_size_distribution-zoomed_3Mb.jpg", width=10, height=6, units="in", dpi=300)
+ggsave("wild_introgressed_size_distribution-zoomed_4Mb.jpg", width=10, height=4, units="in", dpi=300)
 
 # Prepare version for chromPlot
 df_regions_gt <- df_anc %>%
