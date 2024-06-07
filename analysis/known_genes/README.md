@@ -60,3 +60,8 @@ bedtools intersect -wa -a dom_genes_combined.gene_seq.bed -b ~/Dropbox/Projects/
 cd ~/Dropbox/Projects/Wild_Introgression/Analyses/local_ancestry-flare/plots_updated_chromPlots
 bedtools intersect -wa -a 50k_markers_dom_genes-no_disease_resistance_genes.bed -b ~/Dropbox/Projects/Wild_Introgression/Analyses/local_ancestry-flare/plots/wbdc_likely_introgressed_segments-breeding.bed | uniq > known_dom_genes_50k_snps_overlap_introgressed_regions.bed
 ```
+
+```bash
+# Get 50k SNP positions for SNPs in Table S2
+grep -wf ~/GitHub/WildIntrogression/analysis/known_genes/table_S2_50k_SNPs_uniq.txt ~/GitHub/morex_reference/morex_v3/50k_9k_BOPA_SNP/50k_idt90_noRescuedSNPs.bed > ~/GitHub/WildIntrogression/analysis/known_genes/table_S2_snps_50k_idt90_noRescuedSNPs.bed
+```
