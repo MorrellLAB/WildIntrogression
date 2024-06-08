@@ -57,7 +57,7 @@ bedtools intersect -a dom_genes_combined.gene_seq.bed -b ~/Dropbox/Projects/Wild
 bedtools intersect -wa -a dom_genes_combined.gene_seq.bed -b ~/Dropbox/Projects/Wild_Introgression/Analyses/local_ancestry-flare/plots/wbdc_likely_introgressed_segments-breeding.bed | uniq > ~/Dropbox/Projects/Wild_Introgression/Analyses/local_ancestry-flare/plots/known_dom_genes_overlap_introgressed_regions.bed
 
 # Get 50k SNPs in Table S2 that overlap with introgressed segments
-cd ~/Dropbox/Projects/Wild_Introgression/Analyses/local_ancestry-flare/plots_updated_chromPlots
+cd ~/Dropbox/Projects/Wild_Introgression/Analyses/local_ancestry-flare/plots_updated_chromPlots_our_pos
 bedtools intersect -wa -a 50k_markers_dom_genes-no_disease_resistance_genes.bed -b ~/Dropbox/Projects/Wild_Introgression/Analyses/local_ancestry-flare/plots/wbdc_likely_introgressed_segments-breeding.bed | uniq > known_dom_genes_50k_snps_overlap_introgressed_regions.bed
 ```
 

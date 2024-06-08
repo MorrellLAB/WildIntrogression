@@ -1,6 +1,5 @@
 #!/usr/bin/env Rscript
 
-library(tidyverse)
 library(data.table)
 library(dplyr)
 library(readxl)
@@ -10,14 +9,14 @@ library(chromPlot)
 library(stringr)
 
 # Updated chromPlots only with revised Table S2 gene list
-setwd("~/Dropbox/Projects/Wild_Introgression/Analyses/local_ancestry-flare/plots_updated_chromPlots")
+setwd("~/Dropbox/Projects/Wild_Introgression/Analyses/local_ancestry-flare/plots_updated_chromPlots_our_pos/")
 
 flare_out_vcf_fp <- "~/Dropbox/Projects/Wild_Introgression/Analyses/local_ancestry-flare/wild_likely_introgressed_geno.flare.out.anc.vcf.gz"
 centromere_fp <- "~/GitHub/morex_reference/morex_v3/pericentromere/MorexV3_centromere_positions.tsv"
 chr_lengths_fp <- "~/GitHub/WildIntrogression/analysis/FLARE/morex_v3_chr_lengths.txt"
 
 # Spreadsheet containing known domestication related genes and bed positions
-genes_fp <- "~/Dropbox/Projects/Wild_Introgression/Jerry_gene_table_revisions/Table_S2_jdf4_raw_merge_genbank_ids.gene_regions.xlsx"
+genes_fp <- "~/Dropbox/Projects/Wild_Introgression/Jerry_gene_table_revisions/Table_S2_jdf4_raw_merge_genbank_ids.gene_regions.new_snp_pos.csv"
 # BED file of gene overlaps with introgressed regions with GenbankID as column 4
 genes_intro_bed_fp <- "~/Dropbox/Projects/Wild_Introgression/Analyses/local_ancestry-flare/plots/known_dom_genes_overlap_introgressed_regions.bed"
 
@@ -36,7 +35,8 @@ chr_lengths <- data.frame(Chrom=tmp_chr_lengths$V1, Start=0, End=tmp_chr_lengths
 chr_centromere <- rbind(centromere, chr_lengths) %>% arrange(Chrom, Start)
 
 # Load CSV with gene info
-genes_df <- read_excel(genes_fp)
+#genes_df <- read_excel(genes_fp)
+genes_df <- read.csv(genes_fp)
 # Load BED file with gene related info
 bed_df <- read.delim(genes_intro_bed_fp, sep="\t", header=FALSE)
 colnames(bed_df) <- c("Chrom", "Start", "End", "GenBankID")
@@ -50,19 +50,22 @@ write_csv(intro.genes, file="known_dom_genes_introgressed_regions.csv", quote="n
 
 # Write a BED file of the 50k SNPs in revised Table S2
 genes_no_disease <- genes_df %>% dplyr::filter(Resistance_Gene != "yes" | is.na(Resistance_Gene))
-genes_no_disease %>% dplyr::select("SNP molecular marker", "Chrom.", "Position (bp)")
-bed_no_disease <- data.frame(Chrom=paste("chr", genes_no_disease$Chrom., sep=""), Start=as.numeric(genes_no_disease$`Position (bp)`)-1, End=as.numeric(genes_no_disease$`Position (bp)`), SNP=genes_no_disease$`SNP molecular marker`)
+#genes_no_disease %>% dplyr::select("SNP molecular marker", "Chrom.", "Position (bp)")
+#bed_no_disease <- data.frame(Chrom=paste("chr", genes_no_disease$Chrom., sep=""), Start=as.numeric(genes_no_disease$`Position (bp)`)-1, End=as.numeric(genes_no_disease$`Position (bp)`), SNP=genes_no_disease$`SNP molecular marker`)
+bed_no_disease <- data.frame(Chrom=genes_no_disease$chr_new, Start=as.numeric(genes_no_disease$pos_bp_new)-1, End=as.numeric(genes_no_disease$pos_bp_new), SNP=genes_no_disease$SNP.molecular.marker)
 # Save to file the run bedtools intersect
 write_delim(bed_no_disease, file="50k_markers_dom_genes-no_disease_resistance_genes.bed", delim="\t", na="", col_names=F)
 
+# Use 50k_markers_dom_genes-no_disease_resistance_genes.bed file and bedtools to get 50k SNPs that overlap introgressed regions
+
 # Load bed output
 # BED file of 50k snps that overlap introgressed regions
-snps_genes_intro_bed_fp <- "~/Dropbox/Projects/Wild_Introgression/Analyses/local_ancestry-flare/plots_updated_chromPlots/known_dom_genes_50k_snps_overlap_introgressed_regions.bed"
+snps_genes_intro_bed_fp <- "~/Dropbox/Projects/Wild_Introgression/Analyses/local_ancestry-flare/plots_updated_chromPlots_our_pos/known_dom_genes_50k_snps_overlap_introgressed_regions.bed"
 snps_bed_df <- read.delim(snps_genes_intro_bed_fp, sep="\t", header=FALSE)
 colnames(snps_bed_df) <- c("Chrom", "Start", "End", "SNP_ID")
 # Add gene symbols
-intro.snps.genes <- left_join(snps_bed_df, genes_df, by=c("SNP_ID" = "SNP molecular marker")) %>%
-    dplyr::select("Chrom.x", "Start.x", "End.x", "SNP_ID", "Locus symbol")
+intro.snps.genes <- left_join(snps_bed_df, genes_df, by=c("SNP_ID" = "SNP.molecular.marker")) %>%
+    dplyr::select("Chrom.x", "Start.x", "End.x", "SNP_ID", "Locus.symbol")
 
 #-------------------
 # Get a list of sample names only
@@ -132,7 +135,7 @@ colnames(df_regions_gt) <- c("Chrom", "Start", "End", "sample", "gt", "Name", "C
 
 # Prepare gene info for plotting
 p.intro.genes <- intro.genes %>%
-    dplyr::select(Chrom.x, Start.x, End.x, "Locus symbol")
+    dplyr::select(Chrom.x, Start.x, End.x, "Locus.symbol")
 colnames(p.intro.genes) <- c("Chrom", "Start", "End", "ID")
 # Add column of colors
 p.intro.genes$Colors <- color_genes
@@ -140,7 +143,7 @@ p.intro.genes$Colors <- color_genes
 # Prepare SNPs for plotting
 colnames(intro.snps.genes) <- c("Chrom", "Start", "End", "SNP_ID", "ID")
 # Make list of SNPs where we have gene intervals to exclude to avoid over plotting labels
-p.intro.snps.genes <- intro.snps.genes[!(intro.snps.genes$SNP_ID %in% intro.genes$`SNP molecular marker`), ] %>%
+p.intro.snps.genes <- intro.snps.genes[!(intro.snps.genes$SNP_ID %in% intro.genes$SNP.molecular.marker), ] %>%
     dplyr::select("Chrom", "Start", "End", "ID")
 p.intro.snps.genes$Colors <- color_genes
 
