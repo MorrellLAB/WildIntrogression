@@ -1,0 +1,29 @@
+WildIntrogression Workflow:
+
+#python3 scripts/vcf_to_zarr.py 
+--vcf data/test_genotypes.vcf.gz 
+--zarr data/test_genotypes.zarr
+
+#creating the Zarr directory
+mkdir out/test_windows/
+
+python3 /Users/jacobpacheco/locator/scripts/locator.py \
+--zarr /Users/jacobpacheco/Desktop/locator/data/test_genotypes.zarr \
+--sample_data /Users/jacobpacheco/Desktop/locator/data/WBDC_INTROGRESSION.txt \
+--out /Users/jacobpacheco/Desktop
+
+#ZARR BOOTSTRAP
+python3 /locator/scripts/locator.py  \
+--zarr /locator/data/test_genotypes.zarr  \
+--sample_data /data/WBDC_INTROGRESSION.txt  \
+--out /locator/out/bootstrap \
+--bootstrap \
+--nboots 550
+
+#PLOTTING
+Rscript 
+/locator/scripts/plot_locator.R  
+--infile /locator/out/bootstrap
+--sample_data /locator/data/WBDC_INTROGRESSION.txt 
+--out /locator/out/Bootstrap_Results 
+--map F
