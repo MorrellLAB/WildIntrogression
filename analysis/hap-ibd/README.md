@@ -104,3 +104,16 @@ We'll start with the 40 markers cutoff and use the list of WBDC individuals iden
 ```bash
 cut -f 3 minmarkers40_maxgap1000.wbdc-dom_pairs_only.txt | grep "WBDC" | uniq | sort -uV > potentially_introgressed_wbdc_list.minmarkers40_maxgap1000.txt
 ```
+
+From list of 48 wild-introgressed samples identified by FLARE, pull the name of cultivated sample.
+
+```bash
+# In dir: ~/GitHub/WildIntrogression/analysis/hap-ibd
+cut -d',' -f 1 ~/Dropbox/Projects/Wild_Introgression/Figure_and_Table_Drafts/Figures_and_Tables_v3/Tables_and_Files_v3/Table\ S3\ -\ wild_introgressed_per_sample_counts_prop-all.csv | tail -n+2 | sort -V > flare_results_48_wild_introgressed_sample_names.txt
+
+grep -wf flare_results_48_wild_introgressed_sample_names.txt ~/Dropbox/Projects/Wild_Introgression/Analyses/hap_ibd/plots/minmarkers40_maxgap1000.wbdc-dom_pairs_only.txt | cut -f 1,3 | sort -k2,2 | uniq
+
+grep -wf flare_results_48_wild_introgressed_sample_names.txt ~/Dropbox/Projects/Wild_Introgression/Analyses/hap_ibd/plots/minmarkers40_maxgap1000.wbdc-dom_pairs_only.txt | cut -f 1,3 | sort -k2,2 | uniq > ~/Dropbox/Projects/Wild_Introgression/Analyses/hap_ibd/plots/flare_results_48_wild-introgressed_x_hap-ibd_minmarkers40_maxgap1000.wbdc-dom_pairs_only.txt
+```
+
+hap-ibd is only a rough initial guess that was confirmed with FLARE later
