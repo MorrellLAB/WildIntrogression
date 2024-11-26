@@ -37,4 +37,5 @@ done
 # Convert blast tabular to BED format
 # BLAST is 1-based so subtract 1 from qstart and keep qend 1-based makes it compatible with bed open interval style
 # If qstart > qend (on the reverese strand), swap the two
-awk -v OFS="\t" '{ print $2,$9-1,$10,$1 }' ${OUT_DIR}/${out_prefix}.top_hit.pidt${PERCENT_IDT}_eval${E_VALUE}_bitscore${BIT_SCORE}.txt | sed -e 's,lcl|,,' | tr '_' '\t' | cut -f 1-4 | sort -k1,1 -k2,2n | awk '$2 > $3 { temp = $3; $3 = $2; $2 = temp } 1' OFS='\t' > ${OUT_DIR}/${out_prefix}.top_hits.bed
+#awk -v OFS="\t" '{ print $2,$9-1,$10,$1 }' ${OUT_DIR}/${out_prefix}.top_hit.pidt${PERCENT_IDT}_eval${E_VALUE}_bitscore${BIT_SCORE}.txt | sed -e 's,lcl|,,' | tr '_' '\t' | cut -f 1-4 | sort -k1,1 -k2,2n | awk '$2 > $3 { temp = $3; $3 = $2; $2 = temp } 1' OFS='\t' > ${OUT_DIR}/${out_prefix}.top_hits.bed
+awk -v OFS="\t" '$9 > $10 { print $2,$10-1,$9,$1 } $9 < $10 { print $2,$9-1,$10,$1 }' ${OUT_DIR}/${out_prefix}.top_hit.pidt${PERCENT_IDT}_eval${E_VALUE}_bitscore${BIT_SCORE}.txt | sed -e 's,lcl|,,' | tr '_' '\t' | cut -f 1-4 | sort -k1,1 -k2,2n | awk '$2 > $3 { temp = $3; $3 = $2; $2 = temp } 1' OFS='\t' > ${OUT_DIR}/${out_prefix}.top_hits.bed
