@@ -10,12 +10,13 @@ POPS_FILE="/panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/abbababa/ns
 OUT_DIR="/panfs/jay/groups/9/morrellp/shared/Projects/Introgressed/dxy"
 OUT_PREFIX="dom-wild-Hmurinum_morex_v3"
 
-WIN_SIZE="20000"
-MIN_SITES_PER_WIN="50"
+WIN_SIZE="50000"
+STEP_SIZE="250"
+MIN_SITES_PER_WIN="10"
 
 THREADS="5"
 
 #--------
 mkdir -p ${OUT_DIR}
 
-python ${GENOMICS_GENERAL}/popgenWindows.py -w ${WIN_SIZE} -m ${MIN_SITES_PER_WIN} -g ${GENO_FILE} --outFile ${OUT_DIR}/${OUT_PREFIX}.win${WIN_SIZE}.minsites${MIN_SITES_PER_WIN}.csv.gz -f phased -T ${THREADS} -p wild -p wild_introgressed -p domesticated --popsFile ${POPS_FILE}
+python ${GENOMICS_GENERAL}/popgenWindows.py -w ${WIN_SIZE} -s ${STEP_SIZE} -m ${MIN_SITES_PER_WIN} -g ${GENO_FILE} --outFile ${OUT_DIR}/${OUT_PREFIX}.win${WIN_SIZE}.step${STEP_SIZE}.minsites${MIN_SITES_PER_WIN}.csv.gz -f phased -T ${THREADS} -p wild -p wild_introgressed -p domesticated --popsFile ${POPS_FILE}
