@@ -14,6 +14,7 @@ WIN_SIZE="20000"
 MIN_SITES_PER_WIN="50"
 
 THREADS="5"
+MIN_SITES_PER_WIN="200"
 
 #--------
 mkdir -p ${OUT_DIR}
