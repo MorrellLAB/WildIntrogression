@@ -1,12 +1,4 @@
 #!/bin/bash -l
-#SBATCH --time=2:00:00
-#SBATCH --ntasks=5
-#SBATCH --mem=24g
-#SBATCH --tmp=24g
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=pmorrell@umn.edu
-#SBATCH -o %j.out
-#SBATCH -e %j.err
 
 # Original script Peter L. Morrell - St. Paul, MN 
 # This script is designed to extract the genotyping data for a set of samples from a VCF file
