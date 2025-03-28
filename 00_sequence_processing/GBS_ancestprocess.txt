@@ -1,0 +1,68 @@
+# 1. Genome Alignments
+# H. bulbosum alignment
+minimap2 -a -x asm20 --cs -r 2k -t 3 \
+    morex_v3_reference.fa \
+    bulbosum_v1.genome.softmasked.fasta \
+    > bulbosum_ASM20_v1.sam
+
+# H. murinum alignment
+minimap2 -a -x asm20 --cs -r 2k -t 3 \
+    morex_v3_reference.fa \
+    murinum_v1.genome.softmasked.fasta \
+    > murinum_ASM20_v1.sam
+
+# H. pubiflorum alignment
+minimap2 -a -x asm20 --cs -r 2k -t 3 \
+    morex_v3_reference.fa \
+    pubiflorum_v1.genome.softmasked.fasta \
+    > pubiflorum_ASM20_v1.sam
+
+# 2. Sort SAM Files
+samtools sort -m10G -@4 -o bulbosum_ASM20_v1.bam bulbosum_ASM20_v1.sam
+samtools sort -m10G -@4 -o murinum_ASM20_v1.bam murinum_ASM20_v1.sam
+samtools sort -m10G -@4 -o pubiflorum_ASM20_v1.bam pubiflorum_ASM20_v1.sam
+
+# 3. Create BED File from VCF
+cat WBDC_GBS_snps_morex_v3.biallelic.mafgt0.0016.filt_miss_het.vcf | grep -v '#' | \
+    awk -v OFS="\t" '{print $1, $2-1, $2, $3}' > wbdc_GBS.bed
+
+# 4. Generate FASTA Using ANGSD (Run for each species)
+angsd -doCounts 1 -doFasta 2 \
+    -i bulbosum_ASM20_v1.bam \
+    -out bulbosum_ASM20_ANGSD.fa
+
+angsd -doCounts 1 -doFasta 2 \
+    -i murinum_ASM20_v1.bam \
+    -out murinum_ASM20_ANGSD.fa
+
+angsd -doCounts 1 -doFasta 2 \
+    -i pubiflorum_ASM20_v1.bam \
+    -out pubiflorum_ASM20_ANGSD.fa
+
+# 5. Extract Sequences at SNP Positions (Run for each species)
+bedtools getfasta -fi bulbosum_ASM20_ANGSD.fa -bed wbdc_GBS.bed -bedOut | \
+    grep -v 'N' | grep -v 'WARNING' > wbdc_GBS_bulbosum.bed
+
+bedtools getfasta -fi murinum_ASM20_ANGSD.fa -bed wbdc_GBS.bed -bedOut | \
+    grep -v 'N' | grep -v 'WARNING' > wbdc_GBS_murinum.bed
+
+bedtools getfasta -fi pubiflorum_ASM20_ANGSD.fa -bed wbdc_GBS.bed -bedOut | \
+    grep -v 'N' | grep -v 'WARNING' > wbdc_GBS_pubiflorum.bed
+
+# 6. Run VCF_to_ESTSFS.py (Process in order of divergence)
+python VCF_to_ESTSFS.py \
+    wbdc_GBS_bulbosum.bed \
+    wbdc_GBS_murinum.bed \
+    wbdc_GBS_pubiflorum.bed \
+    WBDC_GBS_snps_morex_v3.biallelic.mafgt0.0016.filt_miss_het.vcf \
+    --output wbdc_GBS_EstSFS_input.txt
+
+# 7. Run EST-SFS
+est-sfs config-file.txt wbdc_GBS_EstSFS_input.txt seed-file.txt wbdc_GBS_sfs.txt wbdc_GBS_pvalues.txt
+
+# 8. Process EST-SFS Output
+python ESTSFS_to_ancestral.py \
+    WBDC_GBS_snps_morex_v3.biallelic.mafgt0.0016.filt_miss_het.vcf \
+    wbdc_GBS_pvalues.txt \
+    Probabilitypercentagethreshold = 50 \
+    --output wbdc_GBS_ancestral.txt
