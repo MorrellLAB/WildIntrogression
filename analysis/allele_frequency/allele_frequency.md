@@ -34,6 +34,34 @@ CULT=/Users/pmorrell/Library/CloudStorage/Dropbox/Documents/Work/Manuscripts/Wil
 VCF=/Users/pmorrell/Library/CloudStorage/Dropbox/Documents/Work/Manuscripts/Wild_Introgression/DRUM_Submission/dom_and_wild_with_introgressed_merged.phased.imputed.no_missing.vcf.gz
 ```
 
+* R code for Fst difference between cultivated barley and wild introgressed and nonintrogressed samples
+
+```R
+intr = read.table('~/Desktop/WBDC_Introgression/Fst/cult_intr.weir.fst',header=T)
+nonintr = read.table('~/Desktop/WBDC_Introgression/Fst/cult_nonintr.weir.fst',header=T)
+comp = data.frame(intr[,3],nonintr[,3])
+comp_filtered = comp[apply(comp, 1, function(row) all(row > 0)), ]
+dim(comp_filtered)
+[//]: 1402    2
+wilcox.test(comp_filtered[,1],comp_filtered[,2],paired=T)
+
+[//]: 	Wilcoxon signed rank test with continuity correction
+
+[//]: data:  comp_filtered[, 1] and comp_filtered[, 2]
+[//]: V = 213768, p-value < 2.2e-16
+[//]: alternative hypothesis: true location shift is not equal to 0
+```
+
+* Calculate descriptive stats using datamash (sorry R) 
+
+```bash
+datamash -H -R 4 --narm mean 3 sstdev 3 median 3 </Desktop/WBDC_Introgression/Fst/cult_intr.weir.fst
+
+datamash -H -R 4 --narm mean 3 sstdev 3 median 3 <Desktop/WBDC_Introgression/Fst/cult_nonintr.weir.fst`
+```
+
+
+
 ## Creating a dxy calculator with Python and GPT4
 
 * vcftools_dxy.py
