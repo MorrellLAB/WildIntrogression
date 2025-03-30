@@ -12,7 +12,8 @@
 
 1. Run [merge_genetic_physical_maps.py](https://github.com/MorrellLAB/WildIntrogression/blob/master/analysis/recombination/merge_genetic_physical_maps.py)
 This will create "merged_genetic_physical_map.bed"
-* Note that this is a BED file with no actual header. \
+* Note that this is a BED file with no actual header.
+
 | Chromosome | Start   | End     | Marker   | Genetic Distance (cM) |
 |------------|---------|---------|----------|----------------------|
 | chr1H      | 50327   | 50328   | 11_20479 | --                   |
@@ -23,8 +24,8 @@ This will create "merged_genetic_physical_map.bed"
 ...
 
 2. Run [interval_genetic_distance.py](https://github.com/MorrellLAB/WildIntrogression/blob/master/analysis/recombination/interval_genetic_distance.py)
-This will create "interval_genetic_distances.tsv" with a summary of the genetic and physical size of each introgression interval. \
-Chromosome	Start	End	Sample	Genetic_Distance(cM)	Physical_Distance(Mbp) \
+This will create "interval_genetic_distances.tsv" with a summary of the genetic and physical size of each introgression interval.
+
 | Chromosome | Start      | End        | Sample  | Genetic_Distance(cM) | Physical_Distance(Mbp) |
 |------------|------------|------------|---------|----------------------|------------------------|
 | chr1H      | 19822692   | 20591395   | WBDC016 | 0.36                 | 0.768703               |
