@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Dependencies
-module load bcftools/1.10.2
+#module load bcftools/1.10.2
+module load bcftools/1.16-gcc-8.2.0-5d4xg4y
 module load plink/1.90b6.10
 module load python3/3.8.3_anaconda2020.07_mamba
 

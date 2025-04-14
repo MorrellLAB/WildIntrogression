@@ -53,3 +53,9 @@ out_prefix="wbdc_gbs"
 # Run plink PCA
 plink --vcf ${vcf_file} --pca --keep-allele-order --allow-extra-chr --out ${out_dir}/${out_prefix}.pca
 ```
+
+Plot PCA using final wild introgressed assignments listed in Table S1 based on all analyses (including FLARE, ABBABABA, etc.).
+
+```bash
+plot_plink_PCA_flare_assign.R
+```

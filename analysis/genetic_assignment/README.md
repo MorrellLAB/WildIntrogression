@@ -35,6 +35,8 @@ Prepare VCF (includes LD pruning).
 
 First, generate list of sample names and the population they belong to. Make sure these names stay in the same order as in the VCF file.
 
+Updated wild introgressed labels based on final Table S1 (after running all analyses) before running `add_pop_info.py`: `~/Dropbox/Projects/Wild_Introgression/Data/Compiled_Introgression_Sample_List.xlsx` sheet "all_combined_v2"
+
 ```bash
 # In dir: ~/Projects/Introgressed/vcf/morex_v3/Filtered
 zgrep "#CHROM" nsgc_wbdc_bopa_9k_morex_v3.poly.filt_miss_het.vcf.gz | cut -f 10- | tr '\t' '\n' > sample_names_nsgc_and_wbdc_morex_v3.txt
@@ -54,14 +56,33 @@ Prepare VCF (includes LD pruning).
 ./prep_nsgc_and_wbdc_geno.sh
 ```
 
+Prepare `.pop` file for running admixture supervised analysis. Export the sheet "all_combined_v2" from file `~/Dropbox/Projects/Wild_Introgression/Data/Compiled_Introgression_Sample_List.xlsx` as a CSV file. The CSV file is located in `~/Dropbox/Projects/Wild_Introgression/Analyses/genetic_assignment/data_morex_v3/Compiled_Introgression_Sample_List-all_combined_v2.csv`
+
+For all wild introgressed individuals identified in previous analyses, change the label to "-" to indicate unknown ancestry where the ancestry should be estimated. For the remaining individuals, leave the accession type label as is to indiciate the individual is a population reference.
+
+Prepare wild subpopulation labels defined in Fang et al. 2014.
+
+```bash
+# In dir: ~/Dropbox/Projects/Wild_Introgression/Analyses/genetic_assignment/data_morex_v3
+# Change wild_introgressed individuals to unknown ancestry
+sed -e 's,wild_introgressed,-,' Compiled_Introgression_Sample_List-all_combined_v2.csv > Compiled_Introgression_Sample_List-all_combined_v2.unk_ancestry.csv
+
+# Generate .pop file compatible with ADMIXTURE program
+# Important: Each line of the .pop file corresponds to individual listed on the same line number in the .fam or .ped file
+~/GitHub/WildIntrogression/analysis/genetic_assignment/plink_fam_to_pop_file.py nsgc_and_wbdc_geno_snps_morex_v3_wPopInfo.pruned.fam Compiled_Introgression_Sample_List-all_combined_v2.unk_ancestry.csv > nsgc_and_wbdc_geno_snps_morex_v3_wPopInfo.pruned.pop
+# Check lines are matched up
+paste nsgc_and_wbdc_geno_snps_morex_v3_wPopInfo.pruned.fam nsgc_and_wbdc_geno_snps_morex_v3_wPopInfo.pruned.pop
+```
+
 ---
 
 ### Running Admixture
 
 ```bash
 # In dir: ~/GitHub/WildIntrogression/analysis/genetic_assignment
+# Admixture unsupervised
 # Utilize Slurm job arrays across replicate runs and GNU parallel across K values
-sbatch --array=0-9 run_admixture-wbdc_geno.sh
+#sbatch --array=0-9 run_admixture-wbdc_geno.sh
 sbatch --array=0-9 run_admixture-nsgc_and_wild_geno.sh
 ```
 

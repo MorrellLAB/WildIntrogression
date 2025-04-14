@@ -9,7 +9,8 @@ library(chromPlot)
 library(stringr)
 
 # Updated chromPlots only with revised Table S2 gene list
-setwd("~/Dropbox/Projects/Wild_Introgression/Analyses/local_ancestry-flare/plots_updated_chromPlots_our_pos/")
+# setwd("~/Dropbox/Projects/Wild_Introgression/Analyses/local_ancestry-flare/plots_updated_chromPlots_our_pos/")
+setwd("~/Dropbox/Projects/Wild_Introgression/Analyses/local_ancestry-flare/plots_updated_chromPlots_our_pos_bw/")
 
 flare_out_vcf_fp <- "~/Dropbox/Projects/Wild_Introgression/Analyses/local_ancestry-flare/wild_likely_introgressed_geno.flare.out.anc.vcf.gz"
 centromere_fp <- "~/GitHub/morex_reference/morex_v3/pericentromere/MorexV3_centromere_positions.tsv"
@@ -109,11 +110,19 @@ df_anc <- df %>%
 
 #--------------------
 # Define colors for groups
-color_breeding <- "#a70b0b"
-color_wild <- "#bfdbf7"
-#color_wild <- "#dee2e6"
-color_hom_ref <- "#dee2e6"
-color_genes <- "#353535"
+#color_breeding <- "#a70b0b"
+color_breeding <- "#bf0e0e"
+# color_wild <- "#bfdbf7"
+color_wild <- "#64b5f6"
+# color_hom_ref <- "#dee2e6"
+"#faf9f9"
+"#f8f9fa"
+"#edede9"
+"#dee2e6"
+color_hom_ref <- "#edede9"
+# color_genes <- "#353535"
+#color_genes <- "#d6ccc2"
+color_genes <- "#e9ecef"
 
 #--------------------
 # Prepare data for chromPlot
@@ -179,5 +188,19 @@ for (samp in sample_names) {
     }
     #legend("bottomright", legend=c("breeding", "wild", "hom_reference"),
     #       col=c(color_breeding, color_wild, color_hom_ref), lty=1, lwd=5, cex=0.9)
+    dev.off()
+    # SVG
+    # Generate and save plot
+    out_svg <- paste0(samp, "_chrom_plot.svg")
+    svg(out_svg, width = 7, height = 3)
+    print(samp)
+    if (nrow(tmp_intro_genes) > 1) {
+        # There are genes that overlap introgressed regions for current sample
+        chromPlot(gaps=chr_centromere, bands=curr_sample, figCols=7, title=samp,
+                  stat=tmp_intro_genes, statCol="Value", statName="Value", noHist=TRUE,
+                  cex=0.4)
+    } else {
+        chromPlot(gaps=chr_centromere, bands=curr_sample, figCols=7, title=samp)
+    }
     dev.off()
 }
