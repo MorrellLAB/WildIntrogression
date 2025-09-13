@@ -120,6 +120,10 @@ ggplot(data=df %>% arrange(group), aes(V3, V5, colour=as.factor(group))) +
 ggsave("plink_pca_pc1_vs_pc3-dom_and_wbdc_geno_tableS1.jpg", width=10, height=6, units="in", dpi=300)
 
 #--------------------
+# colors_wild_vs_wild_introgressed = c("#4ea5ff", "#ff0000")
+colors_wild_vs_wild_introgressed = c("#ced4da", "#072ac8")
+
+#--------------------
 # Genotype data
 # Wild samples only
 # Add groups to use for coloring points
@@ -150,7 +154,7 @@ ggplot(data=df_wild %>% arrange(group), aes(V3, V4, colour=as.factor(group))) +
   geom_point(alpha=0.7) +
   geom_text_repel(aes(label=V1), data=subset(df_wild, group == "Wild Introgressed"), max.overlaps= 10, show.legend=F) +
   theme_bw() +
-  scale_color_manual(values=c("#4ea5ff", "#ff0000")) +
+  scale_color_manual(values=colors_wild_vs_wild_introgressed) +
   xlab(wpc1lab) + ylab(wpc2lab) +
   theme(legend.title=element_blank(),
         axis.text=element_text(size=16),
@@ -164,7 +168,7 @@ ggplot(data=df_wild %>% arrange(group), aes(V3, V4, colour=as.factor(group))) +
   geom_point(alpha=0.7) +
   theme_bw() +
   # scale_color_manual(values=c("#4ea5ff", "#ff0000")) +
-  scale_color_manual(values=c("#ced4da", "#072ac8")) +
+  scale_color_manual(values=colors_wild_vs_wild_introgressed) +
   xlab(wpc1lab) + ylab(wpc2lab) +
   theme(legend.title=element_blank(),
         axis.text=element_text(size=16),
@@ -174,11 +178,25 @@ ggplot(data=df_wild %>% arrange(group), aes(V3, V4, colour=as.factor(group))) +
 ggsave("plink_pca_pc1_vs_pc2-wbdc_geno_tableS1.jpg", width=10, height=6, units="in", dpi=300)
 
 # Plot PC3 vs PC2
+# With labels
 ggplot(data=df_wild %>% arrange(group), aes(V5, V4, colour=as.factor(group))) +
   geom_point(alpha=0.7) +
   geom_text_repel(aes(label=V1), data=subset(df_wild, group == "Wild Introgressed"), max.overlaps= 10, show.legend=F) +
   theme_bw() +
-  scale_color_manual(values=c("#4ea5ff", "#ff0000")) +
+  scale_color_manual(values=colors_wild_vs_wild_introgressed) +
+  xlab(wpc3lab) + ylab(wpc2lab) +
+  theme(legend.title=element_blank(),
+        axis.text=element_text(size=16),
+        axis.title=element_text(size=18),
+        legend.text=element_text(size=18),
+        legend.key.size=unit(10, "point"))
+ggsave("plink_pca_pc3_vs_pc2_with_labels-wbdc_geno_tableS1.jpg", width=10, height=6, units="in", dpi=300)
+
+# Without labels
+ggplot(data=df_wild %>% arrange(group), aes(V5, V4, colour=as.factor(group))) +
+  geom_point(alpha=0.7) +
+  theme_bw() +
+  scale_color_manual(values=colors_wild_vs_wild_introgressed) +
   xlab(wpc3lab) + ylab(wpc2lab) +
   theme(legend.title=element_blank(),
         axis.text=element_text(size=16),
@@ -188,11 +206,25 @@ ggplot(data=df_wild %>% arrange(group), aes(V5, V4, colour=as.factor(group))) +
 ggsave("plink_pca_pc3_vs_pc2-wbdc_geno_tableS1.jpg", width=10, height=6, units="in", dpi=300)
 
 # Plot PC1 vs PC3
+# With labels
 ggplot(data=df_wild %>% arrange(group), aes(V3, V5, colour=as.factor(group))) +
   geom_point(alpha=0.7) +
   geom_text_repel(aes(label=V1), data=subset(df_wild, group == "Wild Introgressed"), max.overlaps= 10, show.legend=F) +
   theme_bw() +
-  scale_color_manual(values=c("#4ea5ff", "#ff0000")) +
+  scale_color_manual(values=colors_wild_vs_wild_introgressed) +
+  xlab(wpc1lab) + ylab(wpc3lab) +
+  theme(legend.title=element_blank(),
+        axis.text=element_text(size=16),
+        axis.title=element_text(size=18),
+        legend.text=element_text(size=18),
+        legend.key.size=unit(10, "point"))
+ggsave("plink_pca_pc1_vs_pc3_with_labels-wbdc_geno_tableS1.jpg", width=10, height=6, units="in", dpi=300)
+
+# Without labels
+ggplot(data=df_wild %>% arrange(group), aes(V3, V5, colour=as.factor(group))) +
+  geom_point(alpha=0.7) +
+  theme_bw() +
+  scale_color_manual(values=colors_wild_vs_wild_introgressed) +
   xlab(wpc1lab) + ylab(wpc3lab) +
   theme(legend.title=element_blank(),
         axis.text=element_text(size=16),
@@ -227,11 +259,25 @@ gbswpc2lab <- paste0("PC2 (", round(gbs_wild_eigenval$V1[2], digits=2), "%)")
 gbswpc3lab <- paste0("PC3 (", round(gbs_wild_eigenval$V1[3], digits=2), "%)")
 
 # Plot PC1 vs PC2
+# With labels
 ggplot(data=df_gbs %>% arrange(group), aes(V3, V4, colour=as.factor(group))) +
   geom_point(alpha=0.7) +
   geom_text_repel(aes(label=V1), data=subset(df_gbs, group == "Wild Introgressed"), max.overlaps= 11, show.legend=F) +
   theme_bw() +
-  scale_color_manual(values=c("#4ea5ff", "#ff0000")) +
+  scale_color_manual(values=colors_wild_vs_wild_introgressed) +
+  xlab(gbswpc1lab) + ylab(gbswpc2lab) +
+  theme(legend.title=element_blank(),
+        axis.text=element_text(size=16),
+        axis.title=element_text(size=18),
+        legend.text=element_text(size=18),
+        legend.key.size=unit(10, "point"))
+ggsave("plink_pca_pc1_vs_pc2_with_labels-wbdc_GBS_tableS1.jpg", width=10, height=6, units="in", dpi=300)
+
+# Without labels
+ggplot(data=df_gbs %>% arrange(group), aes(V3, V4, colour=as.factor(group))) +
+  geom_point(alpha=0.7) +
+  theme_bw() +
+  scale_color_manual(values=colors_wild_vs_wild_introgressed) +
   xlab(gbswpc1lab) + ylab(gbswpc2lab) +
   theme(legend.title=element_blank(),
         axis.text=element_text(size=16),
@@ -241,11 +287,25 @@ ggplot(data=df_gbs %>% arrange(group), aes(V3, V4, colour=as.factor(group))) +
 ggsave("plink_pca_pc1_vs_pc2-wbdc_GBS_tableS1.jpg", width=10, height=6, units="in", dpi=300)
 
 # Plot PC3 vs PC2
+# With labels
 ggplot(data=df_gbs %>% arrange(group), aes(V5, V4, colour=as.factor(group))) +
   geom_point(alpha=0.7) +
   geom_text_repel(aes(label=V1), data=subset(df_gbs, group == "Wild Introgressed"), max.overlaps= 11, show.legend=F) +
   theme_bw() +
-  scale_color_manual(values=c("#4ea5ff", "#ff0000")) +
+  scale_color_manual(values=colors_wild_vs_wild_introgressed) +
+  xlab(gbswpc3lab) + ylab(gbswpc2lab) +
+  theme(legend.title=element_blank(),
+        axis.text=element_text(size=16),
+        axis.title=element_text(size=18),
+        legend.text=element_text(size=18),
+        legend.key.size=unit(10, "point"))
+ggsave("plink_pca_pc3_vs_pc2_with_labels-wbdc_GBS_tableS1.jpg", width=10, height=6, units="in", dpi=300)
+
+# Without labels
+ggplot(data=df_gbs %>% arrange(group), aes(V5, V4, colour=as.factor(group))) +
+  geom_point(alpha=0.7) +
+  theme_bw() +
+  scale_color_manual(values=colors_wild_vs_wild_introgressed) +
   xlab(gbswpc3lab) + ylab(gbswpc2lab) +
   theme(legend.title=element_blank(),
         axis.text=element_text(size=16),
@@ -255,11 +315,25 @@ ggplot(data=df_gbs %>% arrange(group), aes(V5, V4, colour=as.factor(group))) +
 ggsave("plink_pca_pc3_vs_pc2-wbdc_GBS_tableS1.jpg", width=10, height=6, units="in", dpi=300)
 
 # Plot PC1 vs PC3
+# With labels
 ggplot(data=df_gbs %>% arrange(group), aes(V3, V5, colour=as.factor(group))) +
   geom_point(alpha=0.7) +
   geom_text_repel(aes(label=V1), data=subset(df_gbs, group == "Wild Introgressed"), max.overlaps= 11, show.legend=F) +
   theme_bw() +
-  scale_color_manual(values=c("#4ea5ff", "#ff0000")) +
+  scale_color_manual(values=colors_wild_vs_wild_introgressed) +
+  xlab(gbswpc1lab) + ylab(gbswpc3lab) +
+  theme(legend.title=element_blank(),
+        axis.text=element_text(size=16),
+        axis.title=element_text(size=18),
+        legend.text=element_text(size=18),
+        legend.key.size=unit(10, "point"))
+ggsave("plink_pca_pc1_vs_pc3_with_labels-wbdc_GBS_tableS1.jpg", width=10, height=6, units="in", dpi=300)
+
+# Without labels
+ggplot(data=df_gbs %>% arrange(group), aes(V3, V5, colour=as.factor(group))) +
+  geom_point(alpha=0.7) +
+  theme_bw() +
+  scale_color_manual(values=colors_wild_vs_wild_introgressed) +
   xlab(gbswpc1lab) + ylab(gbswpc3lab) +
   theme(legend.title=element_blank(),
         axis.text=element_text(size=16),
