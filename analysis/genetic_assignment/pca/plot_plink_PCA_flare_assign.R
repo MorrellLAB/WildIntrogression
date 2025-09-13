@@ -145,9 +145,23 @@ wpc2lab <- paste0("PC2 (", round(wild_eigenval$V1[2], digits=2), "%)")
 wpc3lab <- paste0("PC3 (", round(wild_eigenval$V1[3], digits=2), "%)")
 
 # Plot PC1 vs PC2
+# With labels
 ggplot(data=df_wild %>% arrange(group), aes(V3, V4, colour=as.factor(group))) +
   geom_point(alpha=0.7) +
   geom_text_repel(aes(label=V1), data=subset(df_wild, group == "Wild Introgressed"), max.overlaps= 10, show.legend=F) +
+  theme_bw() +
+  scale_color_manual(values=c("#4ea5ff", "#ff0000")) +
+  xlab(wpc1lab) + ylab(wpc2lab) +
+  theme(legend.title=element_blank(),
+        axis.text=element_text(size=16),
+        axis.title=element_text(size=18),
+        legend.text=element_text(size=18),
+        legend.key.size=unit(10, "point"))
+ggsave("plink_pca_pc1_vs_pc2_with_labels-wbdc_geno_tableS1.jpg", width=10, height=6, units="in", dpi=300)
+
+# Without labels
+ggplot(data=df_wild %>% arrange(group), aes(V3, V4, colour=as.factor(group))) +
+  geom_point(alpha=0.7) +
   theme_bw() +
   scale_color_manual(values=c("#4ea5ff", "#ff0000")) +
   xlab(wpc1lab) + ylab(wpc2lab) +
