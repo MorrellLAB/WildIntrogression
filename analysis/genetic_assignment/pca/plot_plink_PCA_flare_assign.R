@@ -163,7 +163,8 @@ ggsave("plink_pca_pc1_vs_pc2_with_labels-wbdc_geno_tableS1.jpg", width=10, heigh
 ggplot(data=df_wild %>% arrange(group), aes(V3, V4, colour=as.factor(group))) +
   geom_point(alpha=0.7) +
   theme_bw() +
-  scale_color_manual(values=c("#4ea5ff", "#ff0000")) +
+  # scale_color_manual(values=c("#4ea5ff", "#ff0000")) +
+  scale_color_manual(values=c("#ced4da", "#072ac8")) +
   xlab(wpc1lab) + ylab(wpc2lab) +
   theme(legend.title=element_blank(),
         axis.text=element_text(size=16),
